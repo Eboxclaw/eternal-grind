@@ -1,26 +1,37 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/sections/Hero";
+import { TickerBand } from "@/components/sections/TickerBand";
+import { ManifestoTeaser } from "@/components/sections/ManifestoTeaser";
+import { MeetBart } from "@/components/sections/MeetBart";
+import { ImmortalityEngine } from "@/components/sections/ImmortalityEngine";
+import { Tokenomics } from "@/components/sections/Tokenomics";
+import { LiveFeed } from "@/components/sections/LiveFeed";
+import { Resignation } from "@/components/sections/Resignation";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Eternity Corp — $OOO · Out Of Office, Forever" },
+      { name: "description", content: "$OOO is an immortal corporate shitcoin run by Bartholomew, a hyper-caffeinated lich. The dev is dust. The ledger is forever. Synergize the void on Ink Chain." },
+      { property: "og:title", content: "Eternity Corp — $OOO · Out Of Office, Forever" },
+      { property: "og:description", content: "Synergizing the void, forever. A perpetually-funded AI brain on Ink Chain. The dev walked into the sea — Bart runs the company now." },
+      { property: "og:type", content: "website" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <main>
+      <Hero />
+      <TickerBand />
+      <ManifestoTeaser />
+      <MeetBart />
+      <ImmortalityEngine />
+      <Tokenomics />
+      <LiveFeed />
+      <Resignation />
+    </main>
+  );
 }
