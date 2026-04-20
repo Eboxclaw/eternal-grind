@@ -1,0 +1,60 @@
+import { motion } from "framer-motion";
+
+export function Resignation() {
+  return (
+    <section className="relative overflow-hidden py-40 md:py-56">
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-50 ink-bleed" aria-hidden />
+
+      <div className="mx-auto max-w-4xl px-6 text-center">
+        <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">§06 — The Resignation</p>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-15%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="font-display text-3xl italic leading-snug text-pearl md:text-5xl"
+        >
+          On day five, the dev posted their auto-reply,<br /> threw the wallet into the sea,
+          <br /> and walked into the tide.
+        </motion.h2>
+
+        {/* Auto-reply card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="mx-auto mt-16 max-w-xl border border-border bg-charcoal pinstripe text-left shadow-[0_30px_80px_-20px_rgba(123,44,255,0.4)]"
+        >
+          <div className="flex items-center justify-between border-b border-border px-5 py-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">
+            <span>● Auto-Reply</span>
+            <span>Sent: forever</span>
+          </div>
+          <div className="px-6 py-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">From: dev@eternity.corp</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">To: humanity</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">Subject: Out of Office (∞)</p>
+            <hr className="my-4 border-border" />
+            <p className="text-pearl">
+              Hi — I'm currently out of office and will be returning <span className="italic text-bone">never.</span>
+              For all matters please contact our acting CEO, <span className="text-ink">Bartholomew</span>,
+              who is available 24/7/365/eternity. Best, the dev.
+            </p>
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/50">— Sent from my burned hardware wallet —</p>
+          </div>
+        </motion.div>
+
+        <motion.h3
+          initial={{ opacity: 0, scale: 0.92, filter: "blur(20px)" }}
+          whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-24 font-display text-[12vw] leading-[0.85] tracking-tight text-pearl text-glow md:text-[8vw]"
+        >
+          Bart is the company now.
+        </motion.h3>
+      </div>
+    </section>
+  );
+}
