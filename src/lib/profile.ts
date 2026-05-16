@@ -80,9 +80,10 @@ export function setProfile(patch: Partial<Profile> | ((p: Profile) => Partial<Pr
   return next;
 }
 
+export type Rank = typeof RANKS[number];
 export function rankFor(xp: number) {
-  let current = RANKS[0];
-  let next: typeof RANKS[number] | null = null;
+  let current: Rank = RANKS[0];
+  let next: Rank | null = null;
   for (let i = 0; i < RANKS.length; i++) {
     if (xp >= RANKS[i].xp) current = RANKS[i];
     if (xp < RANKS[i].xp && !next) next = RANKS[i];
