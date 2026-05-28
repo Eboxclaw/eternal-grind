@@ -6,4 +6,8 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+export default defineConfig({
+  // Cloudflare's build environment is not a Lovable sandbox, so force the Nitro
+  // Cloudflare bundle that emits dist/server/wrangler.json for `wrangler deploy`.
+  nitro: true,
+});
