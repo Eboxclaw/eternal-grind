@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "eternal-grind",
-  "account_id": "261ec074fb3907bfa01b320a189460de",
+  "account_id": "836ade685abebb6150aacf0420286683",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry"
