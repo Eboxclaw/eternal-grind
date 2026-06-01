@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
-import { INKCHAIN_URL } from "@/lib/ooo";
+import { Copy, Lock, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
+import { INKCHAIN_URL, INKO_CA, INKO_COMMUNITY_URL } from "@/lib/ooo";
 import inkoCoin from "@/assets/inko-coin.png";
+
+const SHORT_CA = `${INKO_CA.slice(0, 6)}…${INKO_CA.slice(-4)}`;
 
 const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
   { k: "Ticker", v: "$INKO", mono: true },
@@ -10,6 +14,13 @@ const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
   { k: "Tax", v: "0 / 0", mono: true },
   { k: "Utility", v: "Unlocks grind techniques" },
 ];
+
+function copyCA() {
+  navigator.clipboard.writeText(INKO_CA).then(
+    () => toast.success("Contract address copied", { description: SHORT_CA }),
+    () => toast.error("Copy failed"),
+  );
+}
 
 export function TokenomicsTerminal() {
   return (
@@ -33,7 +44,7 @@ export function TokenomicsTerminal() {
           {ROWS.map((r) => (
             <div
               key={r.k}
-              className="flex items-center justify-between border-b border-border px-6 py-6 last:border-b-0 md:[&:nth-last-child(-n+2)]:border-b-0 md:border-r md:[&:nth-child(2n)]:border-r-0"
+              className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0"
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">{r.k}</span>
               <span className={r.mono ? "font-mono text-xl text-pearl" : "font-display text-2xl text-pearl"}>
@@ -41,6 +52,40 @@ export function TokenomicsTerminal() {
               </span>
             </div>
           ))}
+
+          {/* Contract */}
+          <div className="flex items-center justify-between gap-4 border-b border-border px-6 py-6 md:border-r">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Contract</span>
+            <button
+              onClick={copyCA}
+              title={INKO_CA}
+              className="group inline-flex items-center gap-2 border border-border bg-charcoal/60 px-3 py-2 font-mono text-sm text-pearl transition-all hover:border-ink hover:text-ink"
+            >
+              <span>{SHORT_CA}</span>
+              <Copy className="h-3.5 w-3.5 opacity-70 group-hover:opacity-100" />
+            </button>
+          </div>
+
+          {/* Dev supply lock */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Dev supply</span>
+            <span className="inline-flex items-center gap-2 font-mono text-lg text-pearl">
+              <Lock className="h-4 w-4 text-ink" /> 25% · locked 12 months
+            </span>
+          </div>
+
+          {/* Community */}
+          <div className="flex items-center justify-between px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Community</span>
+            <a
+              href={INKO_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink"
+            >
+              inkypump.com/join/INKO <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </div>
 
         <motion.div
