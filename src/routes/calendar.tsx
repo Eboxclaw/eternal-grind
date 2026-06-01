@@ -627,6 +627,241 @@ function Stat({ label, v, tone }: { label: string; v: number; tone: "ink" | "pea
   );
 }
 
+// ---------------- Selection toolbar ----------------
+const TYPE_BTNS: { type: BlockType; cls: string }[] = [
+  { type: "free", cls: "border-ink/60 bg-ink/20 text-pearl hover:bg-ink/40" },
+  { type: "work", cls: "border-border bg-bone/5 text-pearl hover:bg-bone/15" },
+  { type: "ghost", cls: "border-violet/40 bg-violet/15 text-pearl hover:bg-violet/30" },
+  { type: "ooo", cls: "border-necro/50 bg-necro/20 text-pearl hover:bg-necro/40" },
+];
+
+function SelectionToolbar({
+  count, freeMoneyPerHour, onApply, onClear, onReset, onSelectAll, onInvert, onSelectByType,
+}: {
+  count: number;
+  freeMoneyPerHour: number;
+  onApply: (t: BlockType, label?: string) => void;
+  onClear: () => void;
+  onReset: () => void;
+  onSelectAll: () => void;
+  onInvert: () => void;
+  onSelectByType: (t: BlockType) => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [labelOpen, setLabelOpen] = useState(false);
+  const [labelText, setLabelText] = useState("");
+
+  return (
+    <div className="sticky top-20 z-30 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 border border-ink/40 bg-charcoal/95 px-4 py-3 backdrop-blur">
+        <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em]">
+          <MousePointerSquareDashed className="h-4 w-4 text-ink" />
+          {count > 0 ? (
+            <>
+              <span className="text-pearl">{count} block{count > 1 ? "s" : ""} selected</span>
+              <span className="text-bone/50">· potential ${(freeMoneyPerHour * count).toFixed(0)} free money</span>
+            </>
+          ) : (
+            <span className="text-bone/60">Click cells to select · then change them in bulk</span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {TYPE_BTNS.map(({ type, cls }) => {
+            const Icon = ICON_FOR[type];
+            return (
+              <button
+                key={type}
+                disabled={count === 0}
+                onClick={() => onApply(type)}
+                className={`inline-flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] disabled:opacity-30 disabled:cursor-not-allowed ${cls}`}
+                title={`Set selection → ${LABEL_FOR[type]}`}
+              >
+                <Icon className="h-3 w-3" /> {LABEL_FOR[type]}
+              </button>
+            );
+          })}
+          <div className="relative" data-popover>
+            <button
+              onClick={(e) => { e.stopPropagation(); setLabelOpen((o) => !o); setMenuOpen(false); }}
+              disabled={count === 0}
+              className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:border-ink disabled:opacity-30"
+            >
+              Label…
+            </button>
+            {labelOpen && (
+              <div data-popover className="absolute right-0 top-full z-40 mt-1 w-64 border border-ink bg-charcoal p-3 shadow-[0_20px_80px_-20px_var(--ink)]">
+                <input
+                  autoFocus
+                  value={labelText}
+                  onChange={(e) => setLabelText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { onApply("free", labelText); setLabelText(""); setLabelOpen(false); }
+                  }}
+                  placeholder="e.g. Smug Coffee Walk"
+                  className="w-full border border-border bg-obsidian px-2 py-2 font-mono text-xs text-pearl outline-none focus:border-ink"
+                />
+                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-bone/60">Enter applies as Grind label. Use type buttons to change kind after.</p>
+              </div>
+            )}
+          </div>
+          <div className="relative" data-popover>
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuOpen((o) => !o); setLabelOpen(false); }}
+              className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:border-ink"
+            >
+              Select… <ChevronDown className="h-3 w-3" />
+            </button>
+            {menuOpen && (
+              <div data-popover className="absolute right-0 top-full z-40 mt-1 w-56 border border-ink bg-charcoal py-1 shadow-[0_20px_80px_-20px_var(--ink)]">
+                <MenuItem onClick={() => { onSelectAll(); setMenuOpen(false); }}>Select all editable</MenuItem>
+                <MenuItem onClick={() => { onClear(); setMenuOpen(false); }}>Select none</MenuItem>
+                <MenuItem onClick={() => { onInvert(); setMenuOpen(false); }}>Invert selection</MenuItem>
+                <div className="my-1 border-t border-border" />
+                {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => (
+                  <MenuItem key={t} onClick={() => { onSelectByType(t); setMenuOpen(false); }}>
+                    Select all {LABEL_FOR[t]}
+                  </MenuItem>
+                ))}
+              </div>
+            )}
+          </div>
+          <button
+            disabled={count === 0}
+            onClick={onReset}
+            className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:border-pearl hover:text-pearl disabled:opacity-30"
+            title="Reset selection to suggested defaults"
+          >
+            <RotateCcw className="h-3 w-3" /> Reset
+          </button>
+          <button
+            disabled={count === 0}
+            onClick={onClear}
+            className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:border-pink hover:text-pink disabled:opacity-30"
+            title="Clear selection"
+          >
+            <X className="h-3 w-3" /> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MenuItem({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="block w-full px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+    >
+      {children}
+    </button>
+  );
+}
+
+// ---------------- Row / Column header popover ----------------
+function HeaderMenu({
+  onSelect, onSet, onClose,
+}: {
+  onSelect: (additive: boolean) => void;
+  onSet: (t: BlockType) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div data-popover className="absolute right-0 top-full z-40 mt-1 w-52 border border-ink bg-charcoal py-1 shadow-[0_20px_80px_-20px_var(--ink)]" onClick={(e) => e.stopPropagation()}>
+      <MenuItem onClick={() => onSelect(false)}>Select these</MenuItem>
+      <MenuItem onClick={() => onSelect(true)}>Add to selection</MenuItem>
+      <div className="my-1 border-t border-border" />
+      {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => {
+        const Icon = ICON_FOR[t];
+        return (
+          <button
+            key={t}
+            onClick={() => onSet(t)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+          >
+            <Icon className="h-3 w-3" /> Set all → {LABEL_FOR[t]}
+          </button>
+        );
+      })}
+      <div className="my-1 border-t border-border" />
+      <MenuItem onClick={onClose}>Close</MenuItem>
+    </div>
+  );
+}
+
+// ---------------- Cell context menu ----------------
+function CellContextMenu({
+  x, y, label, inSelection, onSet, onLabel, onAddToSelection, onReset, onClose,
+}: {
+  x: number; y: number; label: string; inSelection: boolean;
+  onSet: (t: BlockType) => void;
+  onLabel: (label: string) => void;
+  onAddToSelection: () => void;
+  onReset: () => void;
+  onClose: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(label);
+  const left = Math.min(x, (typeof window !== "undefined" ? window.innerWidth : 1200) - 240);
+  const top = Math.min(y, (typeof window !== "undefined" ? window.innerHeight : 800) - 360);
+
+  return (
+    <div
+      data-popover
+      style={{ left, top }}
+      onClick={(e) => e.stopPropagation()}
+      className="fixed z-[80] w-56 border border-ink bg-charcoal py-1 shadow-[0_30px_120px_-20px_var(--ink)]"
+    >
+      <p className="px-3 py-2 font-mono text-[9px] uppercase tracking-[0.25em] text-bone/60">
+        {inSelection ? "Applies to selection" : "Applies to this cell"}
+      </p>
+      <div className="border-t border-border" />
+      {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => {
+        const Icon = ICON_FOR[t];
+        return (
+          <button
+            key={t}
+            onClick={() => onSet(t)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+          >
+            <Icon className="h-3 w-3" /> Set → {LABEL_FOR[t]}
+          </button>
+        );
+      })}
+      <div className="my-1 border-t border-border" />
+      {!editing ? (
+        <MenuItem onClick={() => setEditing(true)}>Edit label…</MenuItem>
+      ) : (
+        <div className="px-3 py-2">
+          <input
+            autoFocus
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") onLabel(text); }}
+            placeholder="Label…"
+            className="w-full border border-border bg-obsidian px-2 py-1.5 font-mono text-xs text-pearl outline-none focus:border-ink"
+          />
+          <button
+            onClick={() => onLabel(text)}
+            className="mt-2 w-full border border-ink bg-ink/20 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/40"
+          >
+            Save
+          </button>
+        </div>
+      )}
+      <MenuItem onClick={onAddToSelection}>Add to selection</MenuItem>
+      <button
+        onClick={onReset}
+        className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:bg-pink/10 hover:text-pink"
+      >
+        <Eraser className="h-3 w-3" /> Reset cell
+      </button>
+      <div className="my-1 border-t border-border" />
+      <MenuItem onClick={onClose}>Close</MenuItem>
+    </div>
+  );
+}
+
 // ---------------- Stepper modal ----------------
 function ConnectStepper({
   onClose, onSubmit,
