@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import {
   Flame, Briefcase, Ghost, Lock, RefreshCw, Trash2, PartyPopper,
   Calendar as CalIcon, AppleIcon, Plus, Play, X, Check, ArrowRight, ArrowLeft, Copy, Sparkles,
+  ChevronDown, MousePointerSquareDashed, Eraser, RotateCcw,
 } from "lucide-react";
+
 import {
   buildSuggestedWeek, suggestRebookSlots, TRIGGER_EVENTS,
   type BlockType, type CalendarCell,
@@ -39,8 +41,12 @@ const LABEL_FOR: Record<BlockType, string> = { free: "Grind", work: "Work", ghos
 function CalendarPage() {
   const [profile, hydrated] = useProfile();
   const [cells, setCells] = useState<CalendarCell[]>(() => buildSuggestedWeek({ hoursPerWeek: 40 }));
-  const [drag, setDrag] = useState<{ start: string; type: BlockType } | null>(null);
-  const [hover, setHover] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [lastClicked, setLastClicked] = useState<string | null>(null);
+  const [drag, setDrag] = useState<{ mode: "add" | "remove" } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ day: number; hour: number; x: number; y: number } | null>(null);
+  const [rowMenuHour, setRowMenuHour] = useState<number | null>(null);
+  const [colMenuDay, setColMenuDay] = useState<number | null>(null);
   const [trigger, setTrigger] = useState<typeof TRIGGER_EVENTS[number] | null>(null);
   const [connectOpen, setConnectOpen] = useState(false);
   const [oooOpen, setOooOpen] = useState(false);
@@ -112,6 +118,71 @@ function CalendarPage() {
   const ratePerSec = profile.salary / ((profile.hoursPerWeek || 40) * 52 * 3600);
   const freeMoneyPerHour = ratePerSec * 3600;
 
+  // Editable cell predicate
+  const isEditable = (d: number, h: number) => {
+    const c = cells.find((x) => x.day === d && x.hour === h);
+    return !!c && c.origin !== "external";
+  };
+
+  // ---- Selection helpers ----
+  function toggleOne(d: number, h: number, shift: boolean) {
+    if (!isEditable(d, h)) return;
+    const k = key(d, h);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (shift && lastClicked) {
+        const [ld, lh] = lastClicked.split("-").map(Number);
+        if (ld === d) {
+          const [lo, hi] = [Math.min(lh, h), Math.max(lh, h)];
+          for (let hh = lo; hh <= hi; hh++) if (isEditable(d, hh)) next.add(key(d, hh));
+        } else {
+          if (next.has(k)) next.delete(k); else next.add(k);
+        }
+      } else {
+        if (next.has(k)) next.delete(k); else next.add(k);
+      }
+      return next;
+    });
+    setLastClicked(k);
+  }
+  const clearSelection = () => setSelected(new Set());
+  const selectAllEditable = () => {
+    const s = new Set<string>();
+    for (const c of cells) if (c.origin !== "external") s.add(key(c.day, c.hour));
+    setSelected(s);
+  };
+  const invertSelection = () => {
+    setSelected((prev) => {
+      const next = new Set<string>();
+      for (const c of cells) {
+        if (c.origin === "external") continue;
+        const k = key(c.day, c.hour);
+        if (!prev.has(k)) next.add(k);
+      }
+      return next;
+    });
+  };
+  const selectByType = (t: BlockType) => {
+    const s = new Set<string>();
+    for (const c of cells) if (c.origin !== "external" && c.type === t) s.add(key(c.day, c.hour));
+    setSelected(s);
+  };
+  const selectRow = (h: number, additive = false) => {
+    setSelected((prev) => {
+      const next = additive ? new Set(prev) : new Set<string>();
+      for (let d = 0; d < 5; d++) if (isEditable(d, h)) next.add(key(d, h));
+      return next;
+    });
+  };
+  const selectCol = (d: number, additive = false) => {
+    setSelected((prev) => {
+      const next = additive ? new Set(prev) : new Set<string>();
+      for (const h of HOURS) if (isEditable(d, h)) next.add(key(d, h));
+      return next;
+    });
+  };
+
+  // ---- Mutation helpers ----
   function setCell(d: number, h: number, type: BlockType, label?: string) {
     setCells((prev) => prev.map((c) =>
       c.day === d && c.hour === h && c.origin !== "external"
@@ -123,30 +194,88 @@ function CalendarPage() {
       c.origin !== "external" && predicate(c) ? { ...c, type, label: label ?? c.label, origin: "inko" } : c,
     ));
   }
+  function applyToSelection(type: BlockType, label?: string) {
+    if (selected.size === 0) {
+      toast("Nothing selected", { description: "Click cells to select first." });
+      return;
+    }
+    setBulk((c) => selected.has(key(c.day, c.hour)), type, label);
+    toast.success(`Set ${selected.size} block(s) → ${LABEL_FOR[type]}`);
+  }
+  function resetSelection() {
+    if (selected.size === 0) return;
+    const fresh = buildSuggestedWeek({ hoursPerWeek: profile.hoursPerWeek || 40 });
+    const freshMap = new Map(fresh.map((c) => [key(c.day, c.hour), c]));
+    setCells((prev) => prev.map((c) => {
+      if (c.origin === "external") return c;
+      if (!selected.has(key(c.day, c.hour))) return c;
+      const f = freshMap.get(key(c.day, c.hour));
+      return f ? { ...f } : c;
+    }));
+    toast("Selection reset to suggested");
+  }
 
-  function handleDown(d: number, h: number) {
-    const cell = cells.find((c) => c.day === d && c.hour === h);
-    if (!cell || cell.origin === "external") return;
-    const next = nextType(cell.type);
-    setDrag({ start: key(d, h), type: next });
-    setHover(new Set([key(d, h)]));
-    setCell(d, h, next, "");
+  // ---- Drag-to-select ----
+  function handleDown(d: number, h: number, e: React.MouseEvent) {
+    if (e.button !== 0) return;
+    if (!isEditable(d, h)) return;
+    const k = key(d, h);
+    const isShift = e.shiftKey;
+    if (isShift) {
+      toggleOne(d, h, true);
+      return;
+    }
+    // toggle and start drag in matching mode
+    const wasSelected = selected.has(k);
+    const mode: "add" | "remove" = wasSelected ? "remove" : "add";
+    setDrag({ mode });
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (mode === "add") next.add(k); else next.delete(k);
+      return next;
+    });
+    setLastClicked(k);
   }
   function handleEnter(d: number, h: number) {
     if (!drag) return;
-    const cell = cells.find((c) => c.day === d && c.hour === h);
-    if (!cell || cell.origin === "external") return;
+    if (!isEditable(d, h)) return;
     const k = key(d, h);
-    if (hover.has(k)) return;
-    setHover((prev) => new Set(prev).add(k));
-    setCell(d, h, drag.type, "");
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (drag.mode === "add") next.add(k); else next.delete(k);
+      return next;
+    });
   }
   useEffect(() => {
     if (!drag) return;
-    const up = () => { setDrag(null); setHover(new Set()); };
+    const up = () => setDrag(null);
     window.addEventListener("mouseup", up);
     return () => window.removeEventListener("mouseup", up);
   }, [drag]);
+
+  // Close popovers on outside click / escape
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest("[data-popover]")) {
+        setContextMenu(null); setRowMenuHour(null); setColMenuDay(null);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setContextMenu(null); setRowMenuHour(null); setColMenuDay(null); clearSelection();
+      }
+    }
+    window.addEventListener("mousedown", onDoc);
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("mousedown", onDoc); window.removeEventListener("keydown", onKey); };
+  }, []);
+
+  function handleContext(d: number, h: number, e: React.MouseEvent) {
+    e.preventDefault();
+    if (!isEditable(d, h)) return;
+    setContextMenu({ day: d, hour: h, x: e.clientX, y: e.clientY });
+  }
 
   const templates = [
     { name: "Maximum Grind Afternoon", apply: () => setBulk((c) => c.hour >= 14, "free", "Smug Grind") },
@@ -195,6 +324,7 @@ function CalendarPage() {
     setOooOpen(false);
     toast.success(`Rebooked '${title}' into ${slots.length} ${profile.preferredBand} slot(s)`);
   }
+
 
   return (
     <main className="pt-24 select-none">
@@ -277,6 +407,18 @@ function CalendarPage() {
           <Stat label="Real bookings" v={counts.booked} tone="bone" />
         </div>
 
+        {/* Selection toolbar — sticky */}
+        <SelectionToolbar
+          count={selected.size}
+          freeMoneyPerHour={freeMoneyPerHour}
+          onApply={applyToSelection}
+          onClear={clearSelection}
+          onReset={resetSelection}
+          onSelectAll={selectAllEditable}
+          onInvert={invertSelection}
+          onSelectByType={selectByType}
+        />
+
         <div className="mb-6 flex flex-wrap gap-2">
           {templates.map((t) => (
             <button
@@ -288,19 +430,56 @@ function CalendarPage() {
           ))}
         </div>
 
-        <div ref={wrapRef} className="border border-border bg-obsidian" onMouseLeave={() => setDrag(null)}>
+        <div ref={wrapRef} className="relative border border-border bg-obsidian" onMouseLeave={() => setDrag(null)}>
           <div className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-border bg-charcoal/60 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">
             <div className="border-r border-border p-4">Hour</div>
-            {DAYS.map((d) => (<div key={d} className="border-r border-border p-4 last:border-r-0">{d}</div>))}
+            {DAYS.map((d, di) => (
+              <div key={d} className="relative flex items-center justify-between gap-2 border-r border-border p-4 last:border-r-0">
+                <span>{d}</span>
+                <button
+                  data-popover
+                  onClick={(e) => { e.stopPropagation(); setColMenuDay(colMenuDay === di ? null : di); setRowMenuHour(null); setContextMenu(null); }}
+                  className="rounded-sm p-1 hover:bg-ink/20 hover:text-ink"
+                  title={`${d} column actions`}
+                >
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {colMenuDay === di && (
+                  <HeaderMenu
+                    onSelect={(additive) => { selectCol(di, additive); setColMenuDay(null); }}
+                    onSet={(t) => { selectCol(di); setBulk((c) => c.day === di, t); setColMenuDay(null); toast.success(`${d} → ${LABEL_FOR[t]}`); }}
+                    onClose={() => setColMenuDay(null)}
+                  />
+                )}
+              </div>
+            ))}
           </div>
 
           {HOURS.map((h) => (
             <div key={h} className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-border last:border-b-0">
-              <div className="border-r border-border p-3 font-mono text-[10px] text-bone/60">{h}:00</div>
+              <div className="relative flex items-center justify-between gap-1 border-r border-border px-3 py-3 font-mono text-[10px] text-bone/60">
+                <span>{h}:00</span>
+                <button
+                  data-popover
+                  onClick={(e) => { e.stopPropagation(); setRowMenuHour(rowMenuHour === h ? null : h); setColMenuDay(null); setContextMenu(null); }}
+                  className="rounded-sm p-1 hover:bg-ink/20 hover:text-ink"
+                  title={`${h}:00 row actions`}
+                >
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {rowMenuHour === h && (
+                  <HeaderMenu
+                    onSelect={(additive) => { selectRow(h, additive); setRowMenuHour(null); }}
+                    onSet={(t) => { selectRow(h); setBulk((c) => c.hour === h, t); setRowMenuHour(null); toast.success(`${h}:00 row → ${LABEL_FOR[t]}`); }}
+                    onClose={() => setRowMenuHour(null)}
+                  />
+                )}
+              </div>
               {DAYS.map((_, di) => {
                 const cell = cells.find((c) => c.day === di && c.hour === h)!;
                 const external = cell.origin === "external";
                 const Icon = external ? Lock : ICON_FOR[cell.type];
+                const isSel = selected.has(key(di, h));
                 const tone = external
                   ? "bg-bone/10 cursor-not-allowed"
                   : cell.type === "free" ? "bg-ink/25 hover:bg-ink/35"
@@ -311,18 +490,23 @@ function CalendarPage() {
                   : cell.type === "free" ? "text-ink"
                   : cell.type === "ooo" ? "text-necro"
                   : cell.type === "ghost" ? "text-violet" : "text-bone/60";
+                const selRing = isSel ? "ring-2 ring-inset ring-ink shadow-[inset_0_0_24px_color-mix(in_oklab,var(--ink)_30%,transparent)]" : "";
                 return (
                   <button
                     key={di} type="button" disabled={external}
-                    title={external ? `Real booking: ${cell.externalTitle}` : ""}
-                    onMouseDown={(e) => { e.preventDefault(); handleDown(di, h); }}
+                    title={external ? `Real booking: ${cell.externalTitle}` : "Click to select · Shift-click for range · Right-click for options"}
+                    onMouseDown={(e) => { e.preventDefault(); handleDown(di, h, e); }}
                     onMouseEnter={() => handleEnter(di, h)}
-                    className={`relative min-h-[64px] border-r border-border p-3 text-left transition-colors last:border-r-0 ${tone}`}
+                    onContextMenu={(e) => handleContext(di, h, e)}
+                    className={`relative min-h-[64px] border-r border-border p-3 text-left transition-colors last:border-r-0 ${tone} ${selRing}`}
                   >
                     <p className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.25em] ${labelTone}`}>
                       <Icon className="h-3 w-3" strokeWidth={2} /> {external ? "Booked" : LABEL_FOR[cell.type]}
                     </p>
                     {cell.label && <p className="mt-1 font-display text-sm text-pearl leading-tight line-clamp-2">{cell.label}</p>}
+                    {isSel && (
+                      <span className="pointer-events-none absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-ink text-[10px] font-bold text-obsidian">✓</span>
+                    )}
                   </button>
                 );
               })}
@@ -331,8 +515,45 @@ function CalendarPage() {
         </div>
 
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">
-          Click to cycle: Work → Grind → Ghost → OOO. Drag to bulk-mark. Locked cells are real bookings (read-only).
+          Click to select · Shift-click for range · Drag to multi-select · Right-click a cell or use the ▾ on rows/columns for quick actions.
         </p>
+
+
+      {contextMenu && (
+        <CellContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          label={cells.find((c) => c.day === contextMenu.day && c.hour === contextMenu.hour)?.label ?? ""}
+          inSelection={selected.has(key(contextMenu.day, contextMenu.hour))}
+          onSet={(t) => {
+            const targetKeys = selected.has(key(contextMenu.day, contextMenu.hour)) && selected.size > 1
+              ? selected : new Set([key(contextMenu.day, contextMenu.hour)]);
+            setBulk((c) => targetKeys.has(key(c.day, c.hour)), t);
+            setContextMenu(null);
+            toast.success(`${targetKeys.size} block(s) → ${LABEL_FOR[t]}`);
+          }}
+          onLabel={(label) => {
+            const targetKeys = selected.has(key(contextMenu.day, contextMenu.hour)) && selected.size > 1
+              ? selected : new Set([key(contextMenu.day, contextMenu.hour)]);
+            setCells((prev) => prev.map((c) =>
+              c.origin !== "external" && targetKeys.has(key(c.day, c.hour)) ? { ...c, label } : c,
+            ));
+            setContextMenu(null);
+          }}
+          onAddToSelection={() => {
+            setSelected((prev) => new Set(prev).add(key(contextMenu.day, contextMenu.hour)));
+            setContextMenu(null);
+          }}
+          onReset={() => {
+            const fresh = buildSuggestedWeek({ hoursPerWeek: profile.hoursPerWeek || 40 });
+            const f = fresh.find((c) => c.day === contextMenu.day && c.hour === contextMenu.hour);
+            if (f) setCell(contextMenu.day, contextMenu.hour, f.type, f.label);
+            setContextMenu(null);
+          }}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
+
 
         <div className="mt-16">
           <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Trigger Events · Daily</p>
@@ -402,6 +623,241 @@ function Stat({ label, v, tone }: { label: string; v: number; tone: "ink" | "pea
     <div className={`border ${border} bg-charcoal p-4`}>
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">{label}</p>
       <p className={`mt-1 font-display text-3xl ${t}`}>{v}</p>
+    </div>
+  );
+}
+
+// ---------------- Selection toolbar ----------------
+const TYPE_BTNS: { type: BlockType; cls: string }[] = [
+  { type: "free", cls: "border-ink/60 bg-ink/20 text-pearl hover:bg-ink/40" },
+  { type: "work", cls: "border-border bg-bone/5 text-pearl hover:bg-bone/15" },
+  { type: "ghost", cls: "border-violet/40 bg-violet/15 text-pearl hover:bg-violet/30" },
+  { type: "ooo", cls: "border-necro/50 bg-necro/20 text-pearl hover:bg-necro/40" },
+];
+
+function SelectionToolbar({
+  count, freeMoneyPerHour, onApply, onClear, onReset, onSelectAll, onInvert, onSelectByType,
+}: {
+  count: number;
+  freeMoneyPerHour: number;
+  onApply: (t: BlockType, label?: string) => void;
+  onClear: () => void;
+  onReset: () => void;
+  onSelectAll: () => void;
+  onInvert: () => void;
+  onSelectByType: (t: BlockType) => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [labelOpen, setLabelOpen] = useState(false);
+  const [labelText, setLabelText] = useState("");
+
+  return (
+    <div className="sticky top-20 z-30 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 border border-ink/40 bg-charcoal/95 px-4 py-3 backdrop-blur">
+        <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em]">
+          <MousePointerSquareDashed className="h-4 w-4 text-ink" />
+          {count > 0 ? (
+            <>
+              <span className="text-pearl">{count} block{count > 1 ? "s" : ""} selected</span>
+              <span className="text-bone/50">· potential ${(freeMoneyPerHour * count).toFixed(0)} free money</span>
+            </>
+          ) : (
+            <span className="text-bone/60">Click cells to select · then change them in bulk</span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {TYPE_BTNS.map(({ type, cls }) => {
+            const Icon = ICON_FOR[type];
+            return (
+              <button
+                key={type}
+                disabled={count === 0}
+                onClick={() => onApply(type)}
+                className={`inline-flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] disabled:opacity-30 disabled:cursor-not-allowed ${cls}`}
+                title={`Set selection → ${LABEL_FOR[type]}`}
+              >
+                <Icon className="h-3 w-3" /> {LABEL_FOR[type]}
+              </button>
+            );
+          })}
+          <div className="relative" data-popover>
+            <button
+              onClick={(e) => { e.stopPropagation(); setLabelOpen((o) => !o); setMenuOpen(false); }}
+              disabled={count === 0}
+              className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:border-ink disabled:opacity-30"
+            >
+              Label…
+            </button>
+            {labelOpen && (
+              <div data-popover className="absolute right-0 top-full z-40 mt-1 w-64 border border-ink bg-charcoal p-3 shadow-[0_20px_80px_-20px_var(--ink)]">
+                <input
+                  autoFocus
+                  value={labelText}
+                  onChange={(e) => setLabelText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { onApply("free", labelText); setLabelText(""); setLabelOpen(false); }
+                  }}
+                  placeholder="e.g. Smug Coffee Walk"
+                  className="w-full border border-border bg-obsidian px-2 py-2 font-mono text-xs text-pearl outline-none focus:border-ink"
+                />
+                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-bone/60">Enter applies as Grind label. Use type buttons to change kind after.</p>
+              </div>
+            )}
+          </div>
+          <div className="relative" data-popover>
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuOpen((o) => !o); setLabelOpen(false); }}
+              className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:border-ink"
+            >
+              Select… <ChevronDown className="h-3 w-3" />
+            </button>
+            {menuOpen && (
+              <div data-popover className="absolute right-0 top-full z-40 mt-1 w-56 border border-ink bg-charcoal py-1 shadow-[0_20px_80px_-20px_var(--ink)]">
+                <MenuItem onClick={() => { onSelectAll(); setMenuOpen(false); }}>Select all editable</MenuItem>
+                <MenuItem onClick={() => { onClear(); setMenuOpen(false); }}>Select none</MenuItem>
+                <MenuItem onClick={() => { onInvert(); setMenuOpen(false); }}>Invert selection</MenuItem>
+                <div className="my-1 border-t border-border" />
+                {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => (
+                  <MenuItem key={t} onClick={() => { onSelectByType(t); setMenuOpen(false); }}>
+                    Select all {LABEL_FOR[t]}
+                  </MenuItem>
+                ))}
+              </div>
+            )}
+          </div>
+          <button
+            disabled={count === 0}
+            onClick={onReset}
+            className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:border-pearl hover:text-pearl disabled:opacity-30"
+            title="Reset selection to suggested defaults"
+          >
+            <RotateCcw className="h-3 w-3" /> Reset
+          </button>
+          <button
+            disabled={count === 0}
+            onClick={onClear}
+            className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:border-pink hover:text-pink disabled:opacity-30"
+            title="Clear selection"
+          >
+            <X className="h-3 w-3" /> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MenuItem({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="block w-full px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+    >
+      {children}
+    </button>
+  );
+}
+
+// ---------------- Row / Column header popover ----------------
+function HeaderMenu({
+  onSelect, onSet, onClose,
+}: {
+  onSelect: (additive: boolean) => void;
+  onSet: (t: BlockType) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div data-popover className="absolute right-0 top-full z-40 mt-1 w-52 border border-ink bg-charcoal py-1 shadow-[0_20px_80px_-20px_var(--ink)]" onClick={(e) => e.stopPropagation()}>
+      <MenuItem onClick={() => onSelect(false)}>Select these</MenuItem>
+      <MenuItem onClick={() => onSelect(true)}>Add to selection</MenuItem>
+      <div className="my-1 border-t border-border" />
+      {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => {
+        const Icon = ICON_FOR[t];
+        return (
+          <button
+            key={t}
+            onClick={() => onSet(t)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+          >
+            <Icon className="h-3 w-3" /> Set all → {LABEL_FOR[t]}
+          </button>
+        );
+      })}
+      <div className="my-1 border-t border-border" />
+      <MenuItem onClick={onClose}>Close</MenuItem>
+    </div>
+  );
+}
+
+// ---------------- Cell context menu ----------------
+function CellContextMenu({
+  x, y, label, inSelection, onSet, onLabel, onAddToSelection, onReset, onClose,
+}: {
+  x: number; y: number; label: string; inSelection: boolean;
+  onSet: (t: BlockType) => void;
+  onLabel: (label: string) => void;
+  onAddToSelection: () => void;
+  onReset: () => void;
+  onClose: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(label);
+  const left = Math.min(x, (typeof window !== "undefined" ? window.innerWidth : 1200) - 240);
+  const top = Math.min(y, (typeof window !== "undefined" ? window.innerHeight : 800) - 360);
+
+  return (
+    <div
+      data-popover
+      style={{ left, top }}
+      onClick={(e) => e.stopPropagation()}
+      className="fixed z-[80] w-56 border border-ink bg-charcoal py-1 shadow-[0_30px_120px_-20px_var(--ink)]"
+    >
+      <p className="px-3 py-2 font-mono text-[9px] uppercase tracking-[0.25em] text-bone/60">
+        {inSelection ? "Applies to selection" : "Applies to this cell"}
+      </p>
+      <div className="border-t border-border" />
+      {(["free", "work", "ghost", "ooo"] as BlockType[]).map((t) => {
+        const Icon = ICON_FOR[t];
+        return (
+          <button
+            key={t}
+            onClick={() => onSet(t)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/20 hover:text-ink"
+          >
+            <Icon className="h-3 w-3" /> Set → {LABEL_FOR[t]}
+          </button>
+        );
+      })}
+      <div className="my-1 border-t border-border" />
+      {!editing ? (
+        <MenuItem onClick={() => setEditing(true)}>Edit label…</MenuItem>
+      ) : (
+        <div className="px-3 py-2">
+          <input
+            autoFocus
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") onLabel(text); }}
+            placeholder="Label…"
+            className="w-full border border-border bg-obsidian px-2 py-1.5 font-mono text-xs text-pearl outline-none focus:border-ink"
+          />
+          <button
+            onClick={() => onLabel(text)}
+            className="mt-2 w-full border border-ink bg-ink/20 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-pearl hover:bg-ink/40"
+          >
+            Save
+          </button>
+        </div>
+      )}
+      <MenuItem onClick={onAddToSelection}>Add to selection</MenuItem>
+      <button
+        onClick={onReset}
+        className="flex w-full items-center gap-2 px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.25em] text-bone hover:bg-pink/10 hover:text-pink"
+      >
+        <Eraser className="h-3 w-3" /> Reset cell
+      </button>
+      <div className="my-1 border-t border-border" />
+      <MenuItem onClick={onClose}>Close</MenuItem>
     </div>
   );
 }
