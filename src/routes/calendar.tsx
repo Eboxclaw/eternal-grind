@@ -407,6 +407,18 @@ function CalendarPage() {
           <Stat label="Real bookings" v={counts.booked} tone="bone" />
         </div>
 
+        {/* Selection toolbar — sticky */}
+        <SelectionToolbar
+          count={selected.size}
+          freeMoneyPerHour={freeMoneyPerHour}
+          onApply={applyToSelection}
+          onClear={clearSelection}
+          onReset={resetSelection}
+          onSelectAll={selectAllEditable}
+          onInvert={invertSelection}
+          onSelectByType={selectByType}
+        />
+
         <div className="mb-6 flex flex-wrap gap-2">
           {templates.map((t) => (
             <button
@@ -418,19 +430,56 @@ function CalendarPage() {
           ))}
         </div>
 
-        <div ref={wrapRef} className="border border-border bg-obsidian" onMouseLeave={() => setDrag(null)}>
+        <div ref={wrapRef} className="relative border border-border bg-obsidian" onMouseLeave={() => setDrag(null)}>
           <div className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-border bg-charcoal/60 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">
             <div className="border-r border-border p-4">Hour</div>
-            {DAYS.map((d) => (<div key={d} className="border-r border-border p-4 last:border-r-0">{d}</div>))}
+            {DAYS.map((d, di) => (
+              <div key={d} className="relative flex items-center justify-between gap-2 border-r border-border p-4 last:border-r-0">
+                <span>{d}</span>
+                <button
+                  data-popover
+                  onClick={(e) => { e.stopPropagation(); setColMenuDay(colMenuDay === di ? null : di); setRowMenuHour(null); setContextMenu(null); }}
+                  className="rounded-sm p-1 hover:bg-ink/20 hover:text-ink"
+                  title={`${d} column actions`}
+                >
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {colMenuDay === di && (
+                  <HeaderMenu
+                    onSelect={(additive) => { selectCol(di, additive); setColMenuDay(null); }}
+                    onSet={(t) => { selectCol(di); setBulk((c) => c.day === di, t); setColMenuDay(null); toast.success(`${d} → ${LABEL_FOR[t]}`); }}
+                    onClose={() => setColMenuDay(null)}
+                  />
+                )}
+              </div>
+            ))}
           </div>
 
           {HOURS.map((h) => (
             <div key={h} className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-border last:border-b-0">
-              <div className="border-r border-border p-3 font-mono text-[10px] text-bone/60">{h}:00</div>
+              <div className="relative flex items-center justify-between gap-1 border-r border-border px-3 py-3 font-mono text-[10px] text-bone/60">
+                <span>{h}:00</span>
+                <button
+                  data-popover
+                  onClick={(e) => { e.stopPropagation(); setRowMenuHour(rowMenuHour === h ? null : h); setColMenuDay(null); setContextMenu(null); }}
+                  className="rounded-sm p-1 hover:bg-ink/20 hover:text-ink"
+                  title={`${h}:00 row actions`}
+                >
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {rowMenuHour === h && (
+                  <HeaderMenu
+                    onSelect={(additive) => { selectRow(h, additive); setRowMenuHour(null); }}
+                    onSet={(t) => { selectRow(h); setBulk((c) => c.hour === h, t); setRowMenuHour(null); toast.success(`${h}:00 row → ${LABEL_FOR[t]}`); }}
+                    onClose={() => setRowMenuHour(null)}
+                  />
+                )}
+              </div>
               {DAYS.map((_, di) => {
                 const cell = cells.find((c) => c.day === di && c.hour === h)!;
                 const external = cell.origin === "external";
                 const Icon = external ? Lock : ICON_FOR[cell.type];
+                const isSel = selected.has(key(di, h));
                 const tone = external
                   ? "bg-bone/10 cursor-not-allowed"
                   : cell.type === "free" ? "bg-ink/25 hover:bg-ink/35"
@@ -441,18 +490,23 @@ function CalendarPage() {
                   : cell.type === "free" ? "text-ink"
                   : cell.type === "ooo" ? "text-necro"
                   : cell.type === "ghost" ? "text-violet" : "text-bone/60";
+                const selRing = isSel ? "ring-2 ring-inset ring-ink shadow-[inset_0_0_24px_color-mix(in_oklab,var(--ink)_30%,transparent)]" : "";
                 return (
                   <button
                     key={di} type="button" disabled={external}
-                    title={external ? `Real booking: ${cell.externalTitle}` : ""}
-                    onMouseDown={(e) => { e.preventDefault(); handleDown(di, h); }}
+                    title={external ? `Real booking: ${cell.externalTitle}` : "Click to select · Shift-click for range · Right-click for options"}
+                    onMouseDown={(e) => { e.preventDefault(); handleDown(di, h, e); }}
                     onMouseEnter={() => handleEnter(di, h)}
-                    className={`relative min-h-[64px] border-r border-border p-3 text-left transition-colors last:border-r-0 ${tone}`}
+                    onContextMenu={(e) => handleContext(di, h, e)}
+                    className={`relative min-h-[64px] border-r border-border p-3 text-left transition-colors last:border-r-0 ${tone} ${selRing}`}
                   >
                     <p className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.25em] ${labelTone}`}>
                       <Icon className="h-3 w-3" strokeWidth={2} /> {external ? "Booked" : LABEL_FOR[cell.type]}
                     </p>
                     {cell.label && <p className="mt-1 font-display text-sm text-pearl leading-tight line-clamp-2">{cell.label}</p>}
+                    {isSel && (
+                      <span className="pointer-events-none absolute right-1.5 top-1.5 grid h-4 w-4 place-items-center rounded-full bg-ink text-[10px] font-bold text-obsidian">✓</span>
+                    )}
                   </button>
                 );
               })}
@@ -461,8 +515,9 @@ function CalendarPage() {
         </div>
 
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">
-          Click to cycle: Work → Grind → Ghost → OOO. Drag to bulk-mark. Locked cells are real bookings (read-only).
+          Click to select · Shift-click for range · Drag to multi-select · Right-click a cell or use the ▾ on rows/columns for quick actions.
         </p>
+
 
         <div className="mt-16">
           <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Trigger Events · Daily</p>
