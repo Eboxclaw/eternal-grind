@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import {
   Flame, Briefcase, Ghost, Lock, RefreshCw, Trash2, PartyPopper,
   Calendar as CalIcon, AppleIcon, Plus, Play, X, Check, ArrowRight, ArrowLeft, Copy, Sparkles,
+  ChevronDown, MousePointerSquareDashed, Eraser, RotateCcw,
 } from "lucide-react";
+
 import {
   buildSuggestedWeek, suggestRebookSlots, TRIGGER_EVENTS,
   type BlockType, type CalendarCell,
