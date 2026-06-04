@@ -1,7 +1,16 @@
 import { motion } from "framer-motion";
 import { Copy, Lock, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
-import { INKCHAIN_URL, INKO_CA, INKO_COMMUNITY_URL } from "@/lib/ooo";
+import {
+  INKO_BUY_URL,
+  INKO_CA,
+  INKO_COMMUNITY_URL,
+  INKO_BRIDGE_URL,
+  INKO_DEBANK_URL,
+  INKO_DEV_LOCK_TX_URL,
+  INKO_DEXSCREENER_URL,
+  INKO_GECKOTERMINAL_URL,
+} from "@/lib/ooo";
 import inkoCoin from "@/assets/inko-coin.png";
 
 const SHORT_CA = `${INKO_CA.slice(0, 6)}…${INKO_CA.slice(-4)}`;
@@ -66,23 +75,62 @@ export function TokenomicsTerminal() {
             </button>
           </div>
 
-          {/* Dev supply lock */}
+          {/* Dev supply lock — links to on-chain lock tx */}
           <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Dev supply</span>
-            <span className="inline-flex items-center gap-2 font-mono text-lg text-pearl">
+            <a
+              href={INKO_DEV_LOCK_TX_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="View 12-month lock tx on Inkchain explorer"
+              className="inline-flex items-center gap-2 font-mono text-lg text-pearl underline decoration-ink/40 underline-offset-4 hover:text-ink"
+            >
               <Lock className="h-4 w-4 text-ink" /> 25% · locked 12 months
-            </span>
+              <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+            </a>
+          </div>
+
+          {/* Price (Dexscreener) */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Price chart</span>
+            <a href={INKO_DEXSCREENER_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              Dexscreener <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* GeckoTerminal */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Pool</span>
+            <a href={INKO_GECKOTERMINAL_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              GeckoTerminal <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* DeBank */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Holdings</span>
+            <a href={INKO_DEBANK_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              DeBank <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* Bridge */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Bridge to Ink</span>
+            <a href={INKO_BRIDGE_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              Jumper.xyz <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           </div>
 
           {/* Community */}
           <div className="flex items-center justify-between px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Community</span>
-            <a
-              href={INKO_COMMUNITY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink"
-            >
+            <a href={INKO_COMMUNITY_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
               inkypump.com/join/INKO <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>
@@ -101,14 +149,17 @@ export function TokenomicsTerminal() {
               Live on Inkchain · 1B supply · zero deliverables
             </p>
           </div>
-          <a
-            href={INKCHAIN_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-ink bg-ink/30 px-7 py-4 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:bg-ink/50 hover:shadow-[0_0_40px_var(--ink)]"
-          >
-            Buy $INKO on Inkchain →
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a href={INKO_BRIDGE_URL} target="_blank" rel="noopener noreferrer"
+              className="border border-border bg-charcoal/60 px-5 py-4 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:border-ink hover:text-ink">
+              Bridge to Ink →
+            </a>
+            <a href={INKO_BUY_URL} target="_blank" rel="noopener noreferrer"
+              className="border border-ink bg-ink/30 px-7 py-4 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:bg-ink/50 hover:shadow-[0_0_40px_var(--ink)]"
+            >
+              Buy $INKO →
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
