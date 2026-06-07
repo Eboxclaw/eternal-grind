@@ -1,7 +1,7 @@
 // Shared lore + data for INKO — Eternal Grind on Inkchain.
 import {
   Briefcase, Ghost, Flame, UtensilsCrossed, Armchair, Coffee, Target, Stethoscope,
-  EyeOff, Droplet, CalendarX, Mail, MessageSquare, Swords, PartyPopper,
+  EyeOff, CalendarX, Mail, MessageSquare, Swords, PartyPopper,
   type LucideIcon,
 } from "lucide-react";
 
@@ -175,4 +175,4 @@ export const TRIGGER_EVENTS = [
   { time: "13:00", label: "Desk Lunch", note: "Chew at your station. Crumbs are evidence of grind." },
   { time: "16:59", label: "SIGMA OVERRIDE", note: "Sigma Hour imminent. Reply-all and disappear." },
 ];
-export const _unused = Droplet;
+
