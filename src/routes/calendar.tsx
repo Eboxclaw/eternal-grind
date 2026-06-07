@@ -51,6 +51,8 @@ function CalendarPage() {
   const [connectOpen, setConnectOpen] = useState(false);
   const [oooOpen, setOooOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const cellsRef = useRef<CalendarCell[]>([]);
+  cellsRef.current = cells;
 
   // Hydrate from profile, or build suggested from salary + hours.
   useEffect(() => {
@@ -253,6 +255,18 @@ function CalendarPage() {
     return () => window.removeEventListener("mouseup", up);
   }, [drag]);
 
+  // One-time discovery hint
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("inko.cal.hint.v1")) return;
+      localStorage.setItem("inko.cal.hint.v1", "1");
+      toast("Calendar tips", {
+        description: "Click to select · Shift-click for range · Right-click for options · ⌘/Ctrl+A to select all",
+        duration: 7000,
+      });
+    } catch {}
+  }, []);
+
   // Close popovers on outside click / escape
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -264,6 +278,14 @@ function CalendarPage() {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setContextMenu(null); setRowMenuHour(null); setColMenuDay(null); clearSelection();
+      }
+      // Cmd/Ctrl+A → select all editable cells (only when no input is focused)
+      const tag = (document.activeElement?.tagName ?? "").toLowerCase();
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "a" && tag !== "input" && tag !== "textarea") {
+        e.preventDefault();
+        const s = new Set<string>();
+        for (const c of cellsRef.current) if (c.origin !== "external") s.add(key(c.day, c.hour));
+        setSelected(s);
       }
     }
     window.addEventListener("mousedown", onDoc);

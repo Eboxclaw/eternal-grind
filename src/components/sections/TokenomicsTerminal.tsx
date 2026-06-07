@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Copy, Lock, ExternalLink } from "lucide-react";
+import { Check, Copy, Lock, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import {
   INKO_BUY_URL,
@@ -24,14 +25,19 @@ const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
   { k: "Utility", v: "Unlocks grind techniques" },
 ];
 
-function copyCA() {
-  navigator.clipboard.writeText(INKO_CA).then(
-    () => toast.success("Contract address copied", { description: SHORT_CA }),
-    () => toast.error("Copy failed"),
-  );
-}
-
 export function TokenomicsTerminal() {
+  const [copied, setCopied] = useState(false);
+  function copyCA() {
+    navigator.clipboard.writeText(INKO_CA).then(
+      () => {
+        setCopied(true);
+        toast.success("Contract address copied", { description: SHORT_CA });
+        window.setTimeout(() => setCopied(false), 1500);
+      },
+      () => toast.error("Copy failed"),
+    );
+  }
+
   return (
     <section className="relative overflow-hidden border-y border-border bg-charcoal py-32 md:py-44">
       <div className="pointer-events-none absolute inset-0 pinstripe-strong opacity-30" aria-hidden />
@@ -68,10 +74,13 @@ export function TokenomicsTerminal() {
             <button
               onClick={copyCA}
               title={INKO_CA}
-              className="group inline-flex items-center gap-2 border border-border bg-charcoal/60 px-3 py-2 font-mono text-sm text-pearl transition-all hover:border-ink hover:text-ink"
+              aria-label={copied ? "Copied" : "Copy contract address"}
+              className="group inline-flex max-w-full items-center gap-2 truncate border border-border bg-charcoal/60 px-3 py-2 font-mono text-sm text-pearl transition-all hover:border-ink hover:text-ink"
             >
-              <span>{SHORT_CA}</span>
-              <Copy className="h-3.5 w-3.5 opacity-70 group-hover:opacity-100" />
+              <span className="truncate">{SHORT_CA}</span>
+              {copied
+                ? <Check className="h-3.5 w-3.5 text-necro" />
+                : <Copy className="h-3.5 w-3.5 opacity-70 group-hover:opacity-100" />}
             </button>
           </div>
 
