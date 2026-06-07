@@ -265,6 +265,12 @@ function CalendarPage() {
       if (e.key === "Escape") {
         setContextMenu(null); setRowMenuHour(null); setColMenuDay(null); clearSelection();
       }
+      // Cmd/Ctrl+A → select all editable cells (only when no input is focused)
+      const tag = (document.activeElement?.tagName ?? "").toLowerCase();
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "a" && tag !== "input" && tag !== "textarea") {
+        e.preventDefault();
+        selectAllEditable();
+      }
     }
     window.addEventListener("mousedown", onDoc);
     window.addEventListener("keydown", onKey);
