@@ -255,8 +255,6 @@ function CalendarPage() {
     return () => window.removeEventListener("mouseup", up);
   }, [drag]);
 
-  // Close popovers on outside click / escape
-  useEffect(() => {
   // One-time discovery hint
   useEffect(() => {
     try {
