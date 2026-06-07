@@ -51,6 +51,8 @@ function CalendarPage() {
   const [connectOpen, setConnectOpen] = useState(false);
   const [oooOpen, setOooOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const cellsRef = useRef<CalendarCell[]>([]);
+  cellsRef.current = cells;
 
   // Hydrate from profile, or build suggested from salary + hours.
   useEffect(() => {
@@ -269,7 +271,9 @@ function CalendarPage() {
       const tag = (document.activeElement?.tagName ?? "").toLowerCase();
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "a" && tag !== "input" && tag !== "textarea") {
         e.preventDefault();
-        selectAllEditable();
+        const s = new Set<string>();
+        for (const c of cellsRef.current) if (c.origin !== "external") s.add(key(c.day, c.hour));
+        setSelected(s);
       }
     }
     window.addEventListener("mousedown", onDoc);
