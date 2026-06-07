@@ -257,6 +257,20 @@ function CalendarPage() {
 
   // Close popovers on outside click / escape
   useEffect(() => {
+  // One-time discovery hint
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("inko.cal.hint.v1")) return;
+      localStorage.setItem("inko.cal.hint.v1", "1");
+      toast("Calendar tips", {
+        description: "Click to select · Shift-click for range · Right-click for options · ⌘/Ctrl+A to select all",
+        duration: 7000,
+      });
+    } catch {}
+  }, []);
+
+  // Close popovers on outside click / escape
+  useEffect(() => {
     function onDoc(e: MouseEvent) {
       const target = e.target as HTMLElement;
       if (!target.closest("[data-popover]")) {
