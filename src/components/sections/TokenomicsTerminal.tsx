@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Copy, Lock, ExternalLink } from "lucide-react";
+import { Check, Copy, Lock, ExternalLink, LineChart, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import {
   INKO_BUY_URL,
@@ -17,6 +17,10 @@ import {
 import inkoCoin from "@/assets/inko-coin.png";
 
 const SHORT_CA = `${INKO_CA.slice(0, 6)}…${INKO_CA.slice(-4)}`;
+const CHART_EMBED_URL =
+  "https://dexscreener.com/ink/0x2b6d23b85582c7bdfe1caec327af5161b220ffb2?embed=1&theme=dark&trades=0&info=0";
+const BUY_EMBED_URL =
+  "https://jumper.exchange/?fromChain=57073&fromToken=0x0000000000000000000000000000000000000000&toChain=57073&toToken=0x767f1e9fedff2bfa4f90a7effddfccc2970530ba";
 
 const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
   { k: "Ticker", v: "$INKO", mono: true },
