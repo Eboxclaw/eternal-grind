@@ -21,6 +21,10 @@ export const INKO_DEXSCREENER_URL =
   "https://dexscreener.com/ink/0x2b6d23b85582c7bdfe1caec327af5161b220ffb2";
 export const INKO_GECKOTERMINAL_URL =
   "https://www.geckoterminal.com/ink/pools/0x2b6d23b85582c7bdfe1caec327af5161b220ffb2?utm_source=coingecko&utm_medium=referral&utm_campaign=searchresults";
+export const INKO_VELODROME_POOL_URL =
+  "https://explorer.inkonchain.com/address/0xD376112EC898598F0B5De1CC17c3B6943ee95AD8";
+export const INKO_INKYSWAP_POOL_URL =
+  "https://explorer.inkonchain.com/address/0x2b6d23B85582c7bdFe1CaeC327aF5161b220ffB2";
 export const SALARY_PER_HOUR = 28;
 export const WORK_END_HOUR = 17;
 
