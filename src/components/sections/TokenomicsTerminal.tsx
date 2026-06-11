@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Copy, Lock, ExternalLink } from "lucide-react";
+import { Check, Copy, Lock, ExternalLink, LineChart, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import {
   INKO_BUY_URL,
@@ -17,6 +17,10 @@ import {
 import inkoCoin from "@/assets/inko-coin.png";
 
 const SHORT_CA = `${INKO_CA.slice(0, 6)}…${INKO_CA.slice(-4)}`;
+const CHART_EMBED_URL =
+  "https://dexscreener.com/ink/0x2b6d23b85582c7bdfe1caec327af5161b220ffb2?embed=1&theme=dark&trades=0&info=0";
+const BUY_EMBED_URL =
+  "https://jumper.exchange/?fromChain=57073&fromToken=0x0000000000000000000000000000000000000000&toChain=57073&toToken=0x767f1e9fedff2bfa4f90a7effddfccc2970530ba";
 
 const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
   { k: "Ticker", v: "$INKO", mono: true },
@@ -29,6 +33,7 @@ const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
 
 export function TokenomicsTerminal() {
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<"chart" | "buy">("chart");
   function copyCA() {
     navigator.clipboard.writeText(INKO_CA).then(
       () => {
@@ -45,23 +50,23 @@ export function TokenomicsTerminal() {
       <div className="pointer-events-none absolute inset-0 pinstripe-strong opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-[1300px] px-6 md:px-12">
         <div className="mb-12 flex items-end justify-between gap-8">
-          <div>
+          <div className="min-w-0">
             <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Module 04 / Terminal</p>
-            <h2 className="font-display text-5xl leading-[1.02] tracking-tight text-pearl md:text-6xl">
+            <h2 className="font-display text-4xl leading-[1.02] tracking-tight text-pearl sm:text-5xl md:text-6xl">
               Tokenomics Terminal.
             </h2>
-            <p className="mt-6 max-w-xl font-display text-xl italic text-bone">
+            <p className="mt-6 max-w-xl font-display text-lg italic text-bone sm:text-xl">
               "$INKO. The only asset that pumps when its holders do absolutely nothing."
             </p>
           </div>
-          <img src={inkoCoin} alt="$INKO coin" className="hidden h-28 w-28 drop-shadow-[0_10px_40px_rgba(123,44,255,0.55)] md:block" draggable={false} />
+          <img src={inkoCoin} alt="$INKO coin" className="hidden h-28 w-28 shrink-0 drop-shadow-[0_10px_40px_rgba(123,44,255,0.55)] md:block" draggable={false} />
         </div>
 
         <div className="grid gap-0 border border-border bg-obsidian/70 md:grid-cols-2">
           {ROWS.map((r) => (
             <div
               key={r.k}
-              className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0"
+              className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0"
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">{r.k}</span>
               <span className={r.mono ? "font-mono text-xl text-pearl" : "font-display text-2xl text-pearl"}>
@@ -71,7 +76,7 @@ export function TokenomicsTerminal() {
           ))}
 
           {/* Contract */}
-          <div className="flex items-center justify-between gap-4 border-b border-border px-6 py-6 md:border-r">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:border-r">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Contract</span>
             <button
               onClick={copyCA}
@@ -87,7 +92,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* Dev supply lock — links to on-chain lock tx */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Dev supply</span>
             <a
               href={INKO_DEV_LOCK_TX_URL}
@@ -102,7 +107,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* Price (Dexscreener) */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:border-r">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Price chart</span>
             <a href={INKO_DEXSCREENER_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -111,7 +116,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* GeckoTerminal */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Pool</span>
             <a href={INKO_GECKOTERMINAL_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -120,7 +125,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* Velodrome pool */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:border-r">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Velodrome</span>
             <a href={INKO_VELODROME_POOL_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -129,7 +134,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* InkySwap locked pool */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">InkySwap</span>
             <a href={INKO_INKYSWAP_POOL_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -138,7 +143,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* DeBank */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:border-r">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Holdings</span>
             <a href={INKO_DEBANK_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -147,7 +152,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* Bridge */}
-          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Bridge to Ink</span>
             <a href={INKO_BRIDGE_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -156,7 +161,7 @@ export function TokenomicsTerminal() {
           </div>
 
           {/* Community */}
-          <div className="flex items-center justify-between px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-6 md:border-r md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Community</span>
             <a href={INKO_COMMUNITY_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
@@ -164,6 +169,71 @@ export function TokenomicsTerminal() {
             </a>
           </div>
         </div>
+
+        {/* Live Chart / Buy widget */}
+        <div className="mt-12 border border-border bg-obsidian/70">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-6">
+            <div className="flex gap-2" role="tablist" aria-label="INKO terminal widget">
+              <button
+                role="tab"
+                aria-selected={tab === "chart"}
+                onClick={() => setTab("chart")}
+                className={`inline-flex items-center gap-2 border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.3em] transition-all ${
+                  tab === "chart"
+                    ? "border-ink bg-ink/30 text-pearl shadow-[0_0_30px_var(--ink)]"
+                    : "border-border bg-charcoal/60 text-bone hover:border-ink hover:text-ink"
+                }`}
+              >
+                <LineChart className="h-3.5 w-3.5" /> Chart
+              </button>
+              <button
+                role="tab"
+                aria-selected={tab === "buy"}
+                onClick={() => setTab("buy")}
+                className={`inline-flex items-center gap-2 border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.3em] transition-all ${
+                  tab === "buy"
+                    ? "border-ink bg-ink/30 text-pearl shadow-[0_0_30px_var(--ink)]"
+                    : "border-border bg-charcoal/60 text-bone hover:border-ink hover:text-ink"
+                }`}
+              >
+                <ShoppingCart className="h-3.5 w-3.5" /> Buy
+              </button>
+            </div>
+            <a
+              href={tab === "chart" ? INKO_DEXSCREENER_URL : INKO_BUY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70 hover:text-ink"
+            >
+              Open in new tab <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+          <div className="relative h-[520px] w-full bg-charcoal sm:h-[600px] md:h-[680px]">
+            {tab === "chart" ? (
+              <iframe
+                key="chart"
+                src={CHART_EMBED_URL}
+                title="INKO live price chart"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full border-0"
+                allow="clipboard-write"
+              />
+            ) : (
+              <iframe
+                key="buy"
+                src={BUY_EMBED_URL}
+                title="Buy $INKO via Jumper"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full border-0"
+                allow="clipboard-write; clipboard-read; web-share"
+              />
+            )}
+          </div>
+          <p className="border-t border-border px-4 py-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60 sm:px-6">
+            Embed blocked? Hit "Open in new tab" — same grind, bigger window.
+          </p>
+        </div>
+
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
