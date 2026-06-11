@@ -50,16 +50,16 @@ export function TokenomicsTerminal() {
       <div className="pointer-events-none absolute inset-0 pinstripe-strong opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-[1300px] px-6 md:px-12">
         <div className="mb-12 flex items-end justify-between gap-8">
-          <div>
+          <div className="min-w-0">
             <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Module 04 / Terminal</p>
-            <h2 className="font-display text-5xl leading-[1.02] tracking-tight text-pearl md:text-6xl">
+            <h2 className="font-display text-4xl leading-[1.02] tracking-tight text-pearl sm:text-5xl md:text-6xl">
               Tokenomics Terminal.
             </h2>
-            <p className="mt-6 max-w-xl font-display text-xl italic text-bone">
+            <p className="mt-6 max-w-xl font-display text-lg italic text-bone sm:text-xl">
               "$INKO. The only asset that pumps when its holders do absolutely nothing."
             </p>
           </div>
-          <img src={inkoCoin} alt="$INKO coin" className="hidden h-28 w-28 drop-shadow-[0_10px_40px_rgba(123,44,255,0.55)] md:block" draggable={false} />
+          <img src={inkoCoin} alt="$INKO coin" className="hidden h-28 w-28 shrink-0 drop-shadow-[0_10px_40px_rgba(123,44,255,0.55)] md:block" draggable={false} />
         </div>
 
         <div className="grid gap-0 border border-border bg-obsidian/70 md:grid-cols-2">
