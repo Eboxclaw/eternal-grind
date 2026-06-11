@@ -11,6 +11,8 @@ import {
   INKO_DEV_LOCK_TX_URL,
   INKO_DEXSCREENER_URL,
   INKO_GECKOTERMINAL_URL,
+  INKO_INKYSWAP_POOL_URL,
+  INKO_VELODROME_POOL_URL,
 } from "@/lib/ooo";
 import inkoCoin from "@/assets/inko-coin.png";
 
