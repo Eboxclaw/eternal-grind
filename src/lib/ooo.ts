@@ -6,10 +6,11 @@ import {
 } from "lucide-react";
 
 export const INKO_COMMUNITY_URL = "https://inkypump.com/join/INKO";
-// All "Buy $INKO" / acquisition CTAs route through the community pump page.
-export const INKCHAIN_URL = INKO_COMMUNITY_URL;
-export const PUMP_FUN_URL = INKO_COMMUNITY_URL;
-export const INKO_BUY_URL = INKO_COMMUNITY_URL;
+// All "Buy $INKO" / acquisition CTAs route through Jumper.xyz.
+export const INKCHAIN_URL =
+  "https://jumper.xyz/?fromChain=57073&fromToken=0x0000000000000000000000000000000000000000&toChain=57073&toToken=0x767f1e9fedff2bfa4f90a7effddfccc2970530ba";
+export const PUMP_FUN_URL = INKCHAIN_URL;
+export const INKO_BUY_URL = INKCHAIN_URL;
 export const INKO_CA = "0x767f1e9fedff2bfa4f90a7effddfccc2970530ba";
 export const INKO_BRIDGE_URL =
   "https://jumper.xyz/?fromChain=57073&toChain=57073&toToken=0x0000000000000000000000000000000000000000";
