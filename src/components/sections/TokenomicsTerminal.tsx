@@ -33,6 +33,7 @@ const ROWS: { k: string; v: React.ReactNode; mono?: boolean }[] = [
 
 export function TokenomicsTerminal() {
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<"chart" | "buy">("chart");
   function copyCA() {
     navigator.clipboard.writeText(INKO_CA).then(
       () => {
