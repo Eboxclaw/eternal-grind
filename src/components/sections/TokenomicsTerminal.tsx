@@ -11,6 +11,8 @@ import {
   INKO_DEV_LOCK_TX_URL,
   INKO_DEXSCREENER_URL,
   INKO_GECKOTERMINAL_URL,
+  INKO_INKYSWAP_POOL_URL,
+  INKO_VELODROME_POOL_URL,
 } from "@/lib/ooo";
 import inkoCoin from "@/assets/inko-coin.png";
 
@@ -114,6 +116,24 @@ export function TokenomicsTerminal() {
             <a href={INKO_GECKOTERMINAL_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
               GeckoTerminal <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* Velodrome pool */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:border-r">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Velodrome</span>
+            <a href={INKO_VELODROME_POOL_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              33% · USDT0-INKO · CL 200 · 0.3% <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* InkySwap locked pool */}
+          <div className="flex items-center justify-between border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">InkySwap</span>
+            <a href={INKO_INKYSWAP_POOL_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-sm text-pearl underline decoration-ink/50 underline-offset-4 hover:text-ink">
+              23% · INKO-ETH · Uni V2 · locked · 0.3% <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>
 
