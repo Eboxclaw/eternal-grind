@@ -170,6 +170,71 @@ export function TokenomicsTerminal() {
           </div>
         </div>
 
+        {/* Live Chart / Buy widget */}
+        <div className="mt-12 border border-border bg-obsidian/70">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-6">
+            <div className="flex gap-2" role="tablist" aria-label="INKO terminal widget">
+              <button
+                role="tab"
+                aria-selected={tab === "chart"}
+                onClick={() => setTab("chart")}
+                className={`inline-flex items-center gap-2 border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.3em] transition-all ${
+                  tab === "chart"
+                    ? "border-ink bg-ink/30 text-pearl shadow-[0_0_30px_var(--ink)]"
+                    : "border-border bg-charcoal/60 text-bone hover:border-ink hover:text-ink"
+                }`}
+              >
+                <LineChart className="h-3.5 w-3.5" /> Chart
+              </button>
+              <button
+                role="tab"
+                aria-selected={tab === "buy"}
+                onClick={() => setTab("buy")}
+                className={`inline-flex items-center gap-2 border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.3em] transition-all ${
+                  tab === "buy"
+                    ? "border-ink bg-ink/30 text-pearl shadow-[0_0_30px_var(--ink)]"
+                    : "border-border bg-charcoal/60 text-bone hover:border-ink hover:text-ink"
+                }`}
+              >
+                <ShoppingCart className="h-3.5 w-3.5" /> Buy
+              </button>
+            </div>
+            <a
+              href={tab === "chart" ? INKO_DEXSCREENER_URL : INKO_BUY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70 hover:text-ink"
+            >
+              Open in new tab <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+          <div className="relative h-[520px] w-full bg-charcoal sm:h-[600px] md:h-[680px]">
+            {tab === "chart" ? (
+              <iframe
+                key="chart"
+                src={CHART_EMBED_URL}
+                title="INKO live price chart"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full border-0"
+                allow="clipboard-write"
+              />
+            ) : (
+              <iframe
+                key="buy"
+                src={BUY_EMBED_URL}
+                title="Buy $INKO via Jumper"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full border-0"
+                allow="clipboard-write; clipboard-read; web-share"
+              />
+            )}
+          </div>
+          <p className="border-t border-border px-4 py-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60 sm:px-6">
+            Embed blocked? Hit "Open in new tab" — same grind, bigger window.
+          </p>
+        </div>
+
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
