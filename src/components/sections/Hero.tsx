@@ -123,9 +123,15 @@ export function Hero() {
             href={INKCHAIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-ink/60 bg-ink/15 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:border-ink hover:bg-ink/25 hover:shadow-[0_0_30px_var(--ink)]"
+            className="border border-ink bg-ink/30 px-7 py-4 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:bg-ink/50 hover:shadow-[0_0_40px_var(--ink)]"
           >
-            Buy $INKO on Inkchain →
+            Buy $INKO →
+          </a>
+          <a
+            href="#calculator"
+            className="border border-violet/60 bg-violet/10 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:border-violet hover:bg-violet/20"
+          >
+            Calculate your smug paycheck →
           </a>
           <Link to="/academy" className="border border-border bg-charcoal/40 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:border-pearl">
             {masteredLabel}
@@ -133,6 +139,7 @@ export function Hero() {
           <Link to="/calendar" className="border border-border bg-charcoal/40 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl transition-all hover:border-pearl">
             Open the grind calendar
           </Link>
+
         </motion.div>
 
         <motion.div
