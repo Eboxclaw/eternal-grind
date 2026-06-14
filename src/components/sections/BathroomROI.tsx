@@ -349,6 +349,25 @@ export function BathroomROI() {
                 <div><p>$ / min</p><p className="mt-1 text-pearl tabular-nums">${perMin.toFixed(4)}</p></div>
                 <div><p>$ / 8h day</p><p className="mt-1 text-pearl tabular-nums">${perDay.toFixed(2)}</p></div>
               </div>
+
+              <a
+                href={INKO_BUY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 border border-ink/60 bg-gradient-to-r from-ink/20 via-violet/15 to-ink/20 px-5 py-4 transition-all hover:border-ink hover:shadow-[0_0_40px_var(--ink)]"
+              >
+                <span className="min-w-0">
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-violet">
+                    INKO does this all day
+                  </span>
+                  <span className="mt-1 block font-display text-lg text-pearl sm:text-xl">
+                    Skip the salary. Hold $INKO.
+                  </span>
+                </span>
+                <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl group-hover:text-ink">
+                  Buy $INKO →
+                </span>
+              </a>
             </div>
           </div>
         </div>
