@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import inkoCoin from "@/assets/inko-coin.png";
+import { INKO_BUY_URL } from "@/lib/ooo";
 
 export function Liberation() {
   return (
