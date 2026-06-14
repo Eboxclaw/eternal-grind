@@ -190,7 +190,8 @@ export function BathroomROI() {
   const lifetimeEarned = lifetimeSec * ratePerSec;
 
   return (
-    <section className="relative overflow-hidden border-y border-border bg-charcoal py-32 md:py-44">
+    <section id="calculator" className="relative scroll-mt-16 overflow-hidden border-y border-border bg-charcoal py-32 md:py-44">
+
       <div className="pointer-events-none absolute inset-0 pinstripe opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-[1300px] px-6 md:px-12">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
