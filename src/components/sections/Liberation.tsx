@@ -65,7 +65,21 @@ export function Liberation() {
         >
           $INKO. Forever.
         </motion.h3>
+
+        <motion.a
+          href={INKO_BUY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="mt-10 inline-flex items-center gap-3 border border-ink bg-ink/30 px-8 py-5 font-mono text-[12px] uppercase tracking-[0.35em] text-pearl transition-all hover:bg-ink/50 hover:shadow-[0_0_50px_var(--ink)]"
+        >
+          Buy $INKO →
+        </motion.a>
       </div>
     </section>
   );
 }
+
