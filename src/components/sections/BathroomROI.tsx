@@ -6,6 +6,7 @@ import {
 import {
   useProfile, setProfile, addActivitySeconds, clearActivityTotals, type ActivityId,
 } from "@/lib/profile";
+import { INKO_BUY_URL } from "@/lib/ooo";
 
 interface Activity { id: ActivityId; label: string; icon: LucideIcon; tagline: string; }
 const ACTIVITIES: Activity[] = [
@@ -190,7 +191,8 @@ export function BathroomROI() {
   const lifetimeEarned = lifetimeSec * ratePerSec;
 
   return (
-    <section className="relative overflow-hidden border-y border-border bg-charcoal py-32 md:py-44">
+    <section id="calculator" className="relative scroll-mt-16 overflow-hidden border-y border-border bg-charcoal py-32 md:py-44">
+
       <div className="pointer-events-none absolute inset-0 pinstripe opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-[1300px] px-6 md:px-12">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
@@ -348,6 +350,25 @@ export function BathroomROI() {
                 <div><p>$ / min</p><p className="mt-1 text-pearl tabular-nums">${perMin.toFixed(4)}</p></div>
                 <div><p>$ / 8h day</p><p className="mt-1 text-pearl tabular-nums">${perDay.toFixed(2)}</p></div>
               </div>
+
+              <a
+                href={INKO_BUY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 border border-ink/60 bg-gradient-to-r from-ink/20 via-violet/15 to-ink/20 px-5 py-4 transition-all hover:border-ink hover:shadow-[0_0_40px_var(--ink)]"
+              >
+                <span className="min-w-0">
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-violet">
+                    INKO does this all day
+                  </span>
+                  <span className="mt-1 block font-display text-lg text-pearl sm:text-xl">
+                    Skip the salary. Hold $INKO.
+                  </span>
+                </span>
+                <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.3em] text-pearl group-hover:text-ink">
+                  Buy $INKO →
+                </span>
+              </a>
             </div>
           </div>
         </div>
