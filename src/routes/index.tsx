@@ -24,13 +24,22 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main>
+      {/*
+        Order of operations:
+        1. Hero — hook + primary Buy CTA
+        2. Ticker — atmosphere
+        3. Calculator — the killer interactive (now near the top so people SEE the dollars accrue)
+        4. Tokenomics + live chart + Buy widget — once they're hooked, hand them the buy button
+        5. Tactics → Calendar → Missions — lore + retention
+        6. Liberation — final smug close + last Buy CTA
+      */}
       <Hero />
       <TickerBand />
-      <SurvivalTactics />
       <BathroomROI />
+      <TokenomicsTerminal />
+      <SurvivalTactics />
       <InvertedCalendarPreview />
       <MissionsPreview />
-      <TokenomicsTerminal />
       <Liberation />
     </main>
   );
