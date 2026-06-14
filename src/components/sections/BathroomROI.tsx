@@ -6,6 +6,7 @@ import {
 import {
   useProfile, setProfile, addActivitySeconds, clearActivityTotals, type ActivityId,
 } from "@/lib/profile";
+import { INKO_BUY_URL } from "@/lib/ooo";
 
 interface Activity { id: ActivityId; label: string; icon: LucideIcon; tagline: string; }
 const ACTIVITIES: Activity[] = [
