@@ -1,66 +1,69 @@
-# Audit & Polish — Priorities
+## Goal
+Expand the $INKO Academy with new crypto-flavored lessons themed around Bitcoin market cycles, buying $INKO / kBTC / ETH, longing XMR (privacy), and USDT0 as the king stablecoin. No duplicates with the existing 65 lessons (none currently touch crypto — safe).
 
-Focused on **UX polish + code quality**, with the **paycheck calculator** as the #1 fix. Light, surgical changes — no architectural rewrites.
+## Changes
 
----
+### 1. `src/lib/academy.ts` — add a `CRYPTO` tag
+- Extend `LessonTag` union with `"CRYPTO"`.
+- Append `"CRYPTO"` to `LESSON_TAGS` so the Academy filter bar shows it.
 
-## 1. Smug Paycheck Calculator (priority) — `src/components/sections/BathroomROI.tsx`
+### 2. `src/lib/academy.ts` — append ~12 new lessons (n: 66–77)
+All new, no overlap with existing #1–65. Mix of ranks/truths, mostly `CRYPTO` tag with a couple cross-tagged (`CAREER`, `SIGMA`, `BATHROOM`).
 
-### Bugs found
-- **Hydration race**: the mount-time write effect fires with default state (`seconds=0, running=false, startedAt=null`) on the same tick as the restore effect, briefly clobbering storage. Visible if the user reloads mid-session and the page is killed before the next render.
-- **Drifting timer**: `setInterval(…, 1000)` is throttled by the browser when the tab is backgrounded → "earned" undercounts. The displayed timer also drifts vs wall clock for long sessions.
-- **No flush on close**: closing the tab while running loses up to ~5s (the unflushed chunk) from lifetime totals.
-- **No per-activity visibility**: profile stores `activityTotals` per activity but the UI only shows one combined number, so the user can't see whether "Toilet Grind" or "Coffee Walk" is winning.
+```
+66  CRYPTO   Apprentice   Buy $INKO Before Standup
+    Open Jumper, swap ETH→INKO on Inkchain, close tab. You now have a thesis.
+    Stand-up: 'aligned on the roadmap.' You meant INKO's.
 
-### Fixes
-- Switch to **wall-clock model**: state = `{ activeId, baseSeconds, startedAt | null }`. Displayed seconds = `baseSeconds + (running ? (now - startedAt)/1000 : 0)`. A 250ms `requestAnimationFrame`/interval just re-renders; the source of truth is timestamps, so backgrounded tabs stay accurate.
-- **Hydration guard**: add `hydrated` flag; the persistence effect no-ops until restore has run. Eliminates the race.
-- **Flush on unload**: `visibilitychange` + `pagehide` listeners call `addActivitySeconds(...)` for the unflushed delta. Also flush every 10s while running (cheaper than every 5s now that ticks aren't the source of truth).
-- **Per-activity breakdown**: under the "Lifetime grind" card, render a compact 2-column grid: icon · label · `mm:ss` · `$x.xx`, sorted descending. Adds a tiny `Clear lifetime` ghost button (with confirm) that calls the existing `clearActivityTotals()`.
-- **Correctness pass on rate math**: keep `salary / (hpw * 52 * 3600)` but clamp hpw with `Math.min(80, Math.max(1, …))` (already partial). Add a defensive `Number.isFinite` check so a cleared salary field doesn't render `$NaN`.
-- **A11y / tap target**: bump activity buttons to `min-h-11` for mobile thumbs, add `aria-pressed` on the selected one, add `aria-live="polite"` on the earned-this-session figure.
+67  CRYPTO   Senior       Stack kBTC On the Toilet
+    Cross-chain BTC to Ink as kBTC from the throne. The seat is the cold
+    storage. The grind is custody.
 
-### Storage shape (migration-safe)
-New key `inko.calc.session.v2` (read v1 once for back-compat, then drop). Shape:
-```ts
-{ activeId: ActivityId; baseSeconds: number; startedAt: number | null }
+68  CRYPTO   Senior       The ETH Ladder
+    DCA into ETH every Friday at 16:58. Reply-All Sigma Hour funds the bag.
+    The bell rings. You buy. You ghost.
+
+69  CRYPTO   Smug Sigma   Long XMR, Short Surveillance
+    Privacy is the only real alpha. Open the Monero bag. Tell no one.
+    INKO doesn't post charts. INKO disappears.
+
+70  CRYPTO   Apprentice   USDT0: The King Stable
+    Park dry powder in USDT0. Not USDC. Not USDT. USDT0 — the king on Ink.
+    Every dip is payroll.
+
+71  CRYPTO   INKO Discip. Bitcoin Cycle Memory
+    Cycle 1 (2012): 'fuck the system.' Cycle 2 (2016): 'bitcoin is the
+    future.' Cycle 3 (2020): 'digital gold.' Cycle 4 (2024): you are here.
+    Grind accordingly.
+
+72  CRYPTO   INKO Himself Future Gen: Privacy Is The Future
+    Boomers had gold. Millennials had BTC. Zoomers had memes. The next gen
+    has private digital assets. Position now. Speak later.
+
+73  CRYPTO   Apprentice   The Portfolio Tab
+    Keep DexScreener open in tab 48. When asked what you're working on, point.
+    'Watching the chart.' Technically true. Spiritually grind.
+
+74  CRYPTO   Senior       LP Lock Bragging Rights
+    Mention 'our liquidity is locked' in any conversation. Nobody knows what
+    it means. Everyone nods. The pool grinds for you.
+
+75  CRYPTO   Smug Sigma   Self-Custody Smirk
+    'Not your keys, not your coins.' Say it once per all-hands. Refuse to
+    elaborate. The hardware wallet is the badge.
+
+76  CAREER   Smug Sigma   Quit On A Green Candle
+    Wait for a 15% green day on your bag. Send the two-week notice in the
+    same browser tab. Markets and HR are both narrative engines.
+
+77  SIGMA    INKO Himself Stablecoin Mindset
+    USDT0 doesn't chase pumps. USDT0 doesn't panic. Be the stablecoin in
+    the meeting. Flat. Liquid. Untouchable.
 ```
 
----
+Numbers, tags, ranks, XP and truth values will follow the existing pattern (XP scaled to rank tier — Apprentice ~60–130, Senior ~200–380, Smug Sigma ~500–700, INKO Disciple ~1000–1600, INKO Himself ~1800–2000).
 
-## 2. Calendar — small UX wins — `src/routes/calendar.tsx`
-
-The selection model + row/col chevrons + right-click submenu already shipped. Remaining polish:
-- **Discoverability hint**: first-load one-time toast (`localStorage` flag `inko.cal.hint.v1`) explaining "Click to select · Shift-click for range · Right-click for options".
-- **Selection toolbar**: make the count + `$ / hour` figure update with a subtle pulse on change so the user notices it; add a `Esc to clear` micro-hint.
-- **Keyboard**: `Esc` already clears — add `Cmd/Ctrl+A` to select all editable cells when the grid has focus.
-- **Mobile**: replace right-click with long-press (350ms) — currently right-click is desktop-only.
-- **Perf**: memoize the per-cell derived `BusyMap` / external-event lookup so dragging across the grid doesn't re-walk all events each cell.
-
-## 3. Tokenomics Terminal — `src/components/sections/TokenomicsTerminal.tsx`
-
-- Truncate the CA display (`0x767F…30Ba`) on mobile so the row doesn't horizontally scroll; full address on hover/title.
-- Add tiny green dot + "verified" tooltip on the Dev-lock row that opens the explorer tx.
-- `Copy CA` button gets an "✓ Copied" state for 1.5s (currently just a toast).
-
-## 4. Cross-cutting polish
-
-- **`src/lib/ooo.ts`**: drop the unused `_unused = Droplet` export and unused `Droplet` import.
-- **Nav**: add `aria-current="page"` to active link (Radix link already adds class — also expose to AT).
-- **SEO**: every route already has its own `head()`; verify `og:image` exists at root and add per-route `description` if missing on `/missions` and `/academy`.
-- **Bundle**: confirm `framer-motion` only imported in sections that use it; remove dead imports flagged by grep.
-
----
-
-## Out of scope
-- No backend / Cloud changes.
-- No new dependencies.
-- No design-system / color overhaul.
-- No new routes.
-
-## Files touched
-- `src/components/sections/BathroomROI.tsx` (main rewrite of timer + persistence + per-activity panel)
-- `src/lib/profile.ts` (no schema change; just expose a small `ACTIVITY_META` map if needed for the breakdown — optional)
-- `src/routes/calendar.tsx` (hint toast, Cmd+A, long-press, memo)
-- `src/components/sections/TokenomicsTerminal.tsx` (CA truncate, copied state)
-- `src/lib/ooo.ts` (cleanup)
+## Notes
+- No changes needed to `AcademyPage` — it iterates `LESSON_TAGS` and renders all `LESSONS`, so the new tag chip and lesson cards appear automatically.
+- No new components, routes, or styles.
+- Existing rank totals still scale (XP thresholds in `src/lib/profile.ts` are unchanged).
