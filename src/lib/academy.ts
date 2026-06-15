@@ -1,7 +1,7 @@
 export type LessonTruth = "HALF TRUE" | "HALF LIE" | "BOTH";
 export type LessonTag =
   | "POSTURE" | "EMAIL" | "SLACK" | "CALENDAR" | "OPTICS"
-  | "SIGMA" | "NAP" | "BATHROOM" | "MEETING" | "CAREER";
+  | "SIGMA" | "NAP" | "BATHROOM" | "MEETING" | "CAREER" | "CRYPTO";
 
 export interface Lesson {
   n: number;
@@ -14,7 +14,7 @@ export interface Lesson {
 }
 
 export const LESSON_TAGS: LessonTag[] = [
-  "POSTURE", "EMAIL", "SLACK", "CALENDAR", "OPTICS", "SIGMA", "NAP", "BATHROOM", "MEETING", "CAREER",
+  "POSTURE", "EMAIL", "SLACK", "CALENDAR", "OPTICS", "SIGMA", "NAP", "BATHROOM", "MEETING", "CAREER", "CRYPTO",
 ];
 
 export const LESSONS: Lesson[] = [
