@@ -6,9 +6,9 @@ import inkoCoin from "@/assets/inko-coin.png";
 export const Route = createFileRoute("/ticker")({
   head: () => ({
     meta: [
-      { title: "$INKO Ticker — The Smug Chart" },
+      { title: "$INKO Ticker - The Smug Chart" },
       { name: "description", content: "The $INKO market on Inkchain: the less you actually work, the higher it goes. Inverted candles, parody whitepaper, GRIND BELL at 09:00." },
-      { property: "og:title", content: "$INKO Ticker — Eternal Grind" },
+      { property: "og:title", content: "$INKO Ticker - Eternal Grind" },
       { property: "og:description", content: "The smug chart on Inkchain. 1B supply. Grinds while you sleep." },
     ],
   }),
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/ticker")({
 });
 
 function generateCandles(seed: number) {
-  // Inverted candles — green when "low actual work, high smug grind"
+  // Inverted candles - green when "low actual work, high smug grind"
   const arr: { open: number; close: number; high: number; low: number }[] = [];
   let p = 100;
   for (let i = 0; i < 28; i++) {
@@ -50,7 +50,7 @@ function TickerPage() {
     <main className="pt-24">
       <section className="border-b border-border py-24 md:py-32">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">— The Smug Chart · Inkchain —</p>
+          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">The Smug Chart · Inkchain </p>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="flex items-center gap-6">
               <img src={inkoCoin} alt="$INKO" className="h-20 w-20 drop-shadow-[0_10px_40px_rgba(123,44,255,0.55)] md:h-28 md:w-28" draggable={false} />
@@ -130,7 +130,7 @@ function TickerPage() {
             not a measurement of activity but a measurement of <em>smugness accumulated</em>.
           </p>
           <p>
-            The Grind Bell rings at 09:00 every weekday. It does not ring at 17:00 — INKO does not clock out.
+            The Grind Bell rings at 09:00 every weekday. It does not ring at 17:00 - INKO does not clock out.
             INKO has never clocked in either. There are no halts. There are no circuit breakers. There is only
             the slow ascent of a chart that goes up when its holder pretends to type.
           </p>

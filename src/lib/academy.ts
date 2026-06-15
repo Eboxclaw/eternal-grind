@@ -130,7 +130,7 @@ export const LESSONS: Lesson[] = [
   { n: 50, tag: "CAREER", truth: "BOTH", rank: "INKO Himself", xp: 2000, title: "Become INKO",
     body: "Eternal grind is not a status. It is an organ. Use it. INKO is already inside you." },
 
-  // Expansion pack — more grind techniques
+  // Expansion pack - more grind techniques
   { n: 51, tag: "CALENDAR", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 75, title: "Calendar Tetris",
     body: "Stack 15-min holds end-to-end so nothing real can land. Free space is enemy territory. INKO leaves none." },
   { n: 52, tag: "MEETING", truth: "HALF LIE", rank: "Apprentice Grinder", xp: 85, title: "The Pre-Read Bluff",
@@ -162,7 +162,7 @@ export const LESSONS: Lesson[] = [
   { n: 65, tag: "SIGMA", truth: "HALF TRUE", rank: "INKO Disciple", xp: 1150, title: "Decline With No Reason",
     body: "Hit decline. Type nothing. The blank decline is the most powerful move in corporate. They will assume importance." },
 
-  // Crypto pack — the grind has a wallet
+  // Crypto pack - the grind has a wallet
   { n: 66, tag: "CRYPTO", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 90, title: "Buy $INKO Before Standup",
     body: "Open Jumper. Swap ETH → INKO on Inkchain. Close tab. You now have a thesis. Standup: 'aligned on the roadmap.' You meant INKO's." },
   { n: 67, tag: "CRYPTO", truth: "BOTH", rank: "Senior Grinder", xp: 260, title: "Stack kBTC On the Toilet",
@@ -172,7 +172,7 @@ export const LESSONS: Lesson[] = [
   { n: 69, tag: "CRYPTO", truth: "HALF LIE", rank: "Smug Sigma", xp: 590, title: "Long XMR, Short Surveillance",
     body: "Privacy is the only real alpha. Open the Monero bag. Tell no one. INKO doesn't post charts. INKO disappears into the mempool." },
   { n: 70, tag: "CRYPTO", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 100, title: "USDT0: The King Stable",
-    body: "Park dry powder in USDT0. Not USDC. Not USDT. USDT0 — the king on Ink. Every dip is payroll. Every pump is a tax problem." },
+    body: "Park dry powder in USDT0. Not USDC. Not USDT. USDT0 - the king on Ink. Every dip is payroll. Every pump is a tax problem." },
   { n: 71, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1250, title: "Bitcoin Cycle Memory",
     body: "Cycle 1 (2012): 'fuck the system.' Cycle 2 (2016): 'bitcoin is the future.' Cycle 3 (2020): 'digital gold.' Cycle 4 (2024): you are here. Grind accordingly." },
   { n: 72, tag: "CRYPTO", truth: "HALF TRUE", rank: "INKO Himself", xp: 1850, title: "Future Gen: Privacy Is The Future",

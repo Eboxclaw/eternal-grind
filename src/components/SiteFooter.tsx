@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-bone/60">— Auto-reply —</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-bone/60">Auto-reply </p>
             <p className="mt-4 font-display text-2xl text-pearl">In deep grind.</p>
             <p className="mt-1 text-sm text-bone">Returning: never · Status: smug</p>
             <p className="text-sm text-bone">Grind Bell · 09:00 daily · never ends</p>

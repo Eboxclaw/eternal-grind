@@ -18,9 +18,9 @@ import { fetchIcs, IcsError } from "@/lib/ical";
 export const Route = createFileRoute("/calendar")({
   head: () => ({
     meta: [
-      { title: "Grind Calendar — $INKO" },
+      { title: "Grind Calendar - $INKO" },
       { name: "description", content: "Read your Google or Apple calendar, auto-suggest smug breaks, and reschedule what you couldn't do. Real meetings stay untouched." },
-      { property: "og:title", content: "Grind Calendar — $INKO" },
+      { property: "og:title", content: "Grind Calendar - $INKO" },
       { property: "og:description", content: "Salary-driven default week. Celebrate OOO. Real bookings stay safe." },
     ],
   }),
@@ -339,7 +339,7 @@ function CalendarPage() {
   function rebookTask(title: string, durationHours: number) {
     const slots = suggestRebookSlots(cells, profile.preferredBand, durationHours);
     if (slots.length === 0) {
-      toast.error("No matching free slots — try a different time-of-day band in your profile.");
+      toast.error("No matching free slots - try a different time-of-day band in your profile.");
       return;
     }
     for (const s of slots) setCell(s.day, s.hour, "ooo", `OOO · ${title}`);
@@ -353,7 +353,7 @@ function CalendarPage() {
       <section className="relative overflow-hidden border-b border-border py-20 md:py-28">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-30 ink-bleed" aria-hidden />
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Module 03 — Week of grind</p>
+          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Module 03 - Week of grind</p>
           <h1 className="font-display text-6xl leading-[0.95] tracking-tight text-pearl md:text-8xl text-glow">
             The Grind<br /><em>Calendar.</em>
           </h1>
@@ -429,7 +429,7 @@ function CalendarPage() {
           <Stat label="Real bookings" v={counts.booked} tone="bone" />
         </div>
 
-        {/* Selection toolbar — sticky */}
+        {/* Selection toolbar - sticky */}
         <SelectionToolbar
           count={selected.size}
           freeMoneyPerHour={freeMoneyPerHour}
@@ -964,7 +964,7 @@ function ConnectStepper({
                 {provider === "apple" && <>
                   <li>Open Calendar on Mac. Right-click the calendar → <em>Share Calendar</em>.</li>
                   <li>Check <em>Public Calendar</em>, then click <em>Share Link</em> and copy the <code className="text-ink">webcal://</code> URL.</li>
-                  <li>Paste below — we'll convert it to <code className="text-ink">https://</code> automatically.</li>
+                  <li>Paste below - we'll convert it to <code className="text-ink">https://</code> automatically.</li>
                 </>}
                 {provider === "ics" && <>
                   <li>Locate any public ICS/iCal feed from your calendar provider.</li>
@@ -1005,7 +1005,7 @@ function ConnectStepper({
                   tested.ok ? "border-necro/50 bg-necro/10 text-necro" : "border-pink/50 bg-pink/10 text-pink"
                 }`}>
                   {tested.ok
-                    ? <span className="inline-flex items-center gap-2"><Check className="h-3 w-3" /> Found {tested.count} events — ready to connect</span>
+                    ? <span className="inline-flex items-center gap-2"><Check className="h-3 w-3" /> Found {tested.count} events - ready to connect</span>
                     : <span>Test failed: {tested.msg}</span>}
                 </div>
               )}

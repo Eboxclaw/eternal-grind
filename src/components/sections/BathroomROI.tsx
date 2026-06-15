@@ -21,7 +21,7 @@ const ACTIVITY_BY_ID: Record<ActivityId, Activity> = Object.fromEntries(
   ACTIVITIES.map((a) => [a.id, a]),
 ) as Record<ActivityId, Activity>;
 
-// v2 session — wall-clock based. baseSeconds = banked time before current run;
+// v2 session - wall-clock based. baseSeconds = banked time before current run;
 // when running, displayed = base + (now - startedAt) / 1000.
 const SESSION_KEY = "inko.calc.session.v2";
 const LEGACY_KEY = "inko.calc.session.v1";
@@ -96,7 +96,7 @@ export function BathroomROI() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baseSeconds, startedAt, running, /* tick */ ]);
 
-  // Flush helper — banks the delta since last flush into profile totals.
+  // Flush helper - banks the delta since last flush into profile totals.
   function flush(now = currentSeconds) {
     const delta = now - lastFlushRef.current;
     if (delta > 0) {
@@ -206,7 +206,7 @@ export function BathroomROI() {
               and watch the dollars accrue. INKO does this for a living.
             </p>
             <ul className="mt-8 space-y-3 text-pearl">
-              <li className="flex items-start gap-3"><span className="text-ink">→</span> Wall-clock accurate — keeps counting in background tabs</li>
+              <li className="flex items-start gap-3"><span className="text-ink">→</span> Wall-clock accurate - keeps counting in background tabs</li>
               <li className="flex items-start gap-3"><span className="text-ink">→</span> Six certified smug activities</li>
               <li className="flex items-start gap-3"><span className="text-ink">→</span> Lifetime totals saved on this device</li>
             </ul>
@@ -313,7 +313,7 @@ export function BathroomROI() {
                   })}
                 </div>
                 <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-violet">
-                  {active.label} — {active.tagline}
+                  {active.label} - {active.tagline}
                 </p>
               </div>
 
