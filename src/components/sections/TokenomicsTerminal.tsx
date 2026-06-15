@@ -91,7 +91,7 @@ export function TokenomicsTerminal() {
             </button>
           </div>
 
-          {/* Dev supply lock — links to on-chain lock tx */}
+          {/* Dev supply lock - links to on-chain lock tx */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-6 md:[&:nth-child(2n)]:border-r-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-bone/70">Dev supply</span>
             <a
@@ -230,7 +230,7 @@ export function TokenomicsTerminal() {
             )}
           </div>
           <p className="border-t border-border px-4 py-3 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60 sm:px-6">
-            Embed blocked? Hit "Open in new tab" — same grind, bigger window.
+            Embed blocked? Hit "Open in new tab" - same grind, bigger window.
           </p>
         </div>
 

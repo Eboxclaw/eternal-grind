@@ -6,7 +6,7 @@ export function MissionsPreview() {
   return (
     <section className="relative overflow-hidden py-32 md:py-44">
       <div className="mx-auto max-w-[1300px] px-6 md:px-12">
-        <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">§03 — Grind Techniques</p>
+        <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">§03 - Grind Techniques</p>
         <h2 className="max-w-3xl font-display text-5xl leading-[1.02] tracking-tight text-pearl md:text-6xl">
           Six rituals INKO does daily.
         </h2>

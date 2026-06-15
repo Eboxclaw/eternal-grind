@@ -9,7 +9,7 @@ import inkoMascot from "@/assets/inko-mascot.png";
 const WORDS = ["ETERNAL", "GRIND."];
 
 function formatGrindBell(now: Date) {
-  // Counts up since 09:00 — the grind never stops.
+  // Counts up since 09:00 - the grind never stops.
   const target = new Date(now);
   target.setHours(9, 0, 0, 0);
   if (now < target) target.setDate(target.getDate() - 1);
@@ -70,7 +70,7 @@ export function Hero() {
           <div className="pointer-events-none absolute -inset-4 rounded-full bg-[radial-gradient(circle_at_center,rgba(181,123,255,0.25),transparent_60%)] blur-2xl" aria-hidden />
           <motion.img
             src={inkoMascot}
-            alt="INKO — the smug grinder"
+            alt="INKO - the smug grinder"
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, y: 30, scale: 0.92, filter: "blur(20px)" }}
@@ -86,7 +86,7 @@ export function Hero() {
           />
         </div>
         <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.45em] text-violet md:text-[11px]">
-          The smug meme that does nothing — and somehow stays on top
+          The smug meme that does nothing - and somehow stays on top
         </p>
 
         <h1 className="font-display text-[16vw] font-semibold leading-[0.85] tracking-tight md:text-[12vw]">

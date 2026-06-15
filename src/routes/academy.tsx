@@ -8,7 +8,7 @@ import { useProfile, toggleLesson, rankFor, RANKS } from "@/lib/profile";
 export const Route = createFileRoute("/academy")({
   head: () => ({
     meta: [
-      { title: "$INKO Academy — 50 Grind Techniques" },
+      { title: "$INKO Academy - 50 Grind Techniques" },
       { name: "description", content: "50 sarcastic, dark-humor grind techniques taught by INKO himself. Look unstoppable. Produce nothing. Earn $INKO." },
       { property: "og:title", content: "$INKO Academy" },
       { property: "og:description", content: "Grind techniques. Half-truths. Half-lies. All smug." },
@@ -76,7 +76,7 @@ function AcademyPage() {
               <div className="h-full bg-ink transition-all" style={{ width: `${Math.round(rank.progress * 100)}%` }} />
             </div>
             <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">
-              {hydrated ? `${profile.xp} Grind Points` : "— Grind Points"} {rank.next ? `· ${rank.next.xp - profile.xp} to ${rank.next.name}` : "· MAX"}
+              {hydrated ? `${profile.xp} Grind Points` : "Grind Points"} {rank.next ? `· ${rank.next.xp - profile.xp} to ${rank.next.name}` : "· MAX"}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-6">

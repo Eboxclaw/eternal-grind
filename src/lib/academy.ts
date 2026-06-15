@@ -130,7 +130,7 @@ export const LESSONS: Lesson[] = [
   { n: 50, tag: "CAREER", truth: "BOTH", rank: "INKO Himself", xp: 2000, title: "Become INKO",
     body: "Eternal grind is not a status. It is an organ. Use it. INKO is already inside you." },
 
-  // Expansion pack — more grind techniques
+  // Expansion pack - more grind techniques
   { n: 51, tag: "CALENDAR", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 75, title: "Calendar Tetris",
     body: "Stack 15-min holds end-to-end so nothing real can land. Free space is enemy territory. INKO leaves none." },
   { n: 52, tag: "MEETING", truth: "HALF LIE", rank: "Apprentice Grinder", xp: 85, title: "The Pre-Read Bluff",
@@ -162,7 +162,7 @@ export const LESSONS: Lesson[] = [
   { n: 65, tag: "SIGMA", truth: "HALF TRUE", rank: "INKO Disciple", xp: 1150, title: "Decline With No Reason",
     body: "Hit decline. Type nothing. The blank decline is the most powerful move in corporate. They will assume importance." },
 
-  // Crypto pack — the grind has a wallet
+  // Crypto pack - the grind has a wallet
   { n: 66, tag: "CRYPTO", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 90, title: "Buy $INKO Before Standup",
     body: "Open Jumper. Swap ETH → INKO on Inkchain. Close tab. You now have a thesis. Standup: 'aligned on the roadmap.' You meant INKO's." },
   { n: 67, tag: "CRYPTO", truth: "BOTH", rank: "Senior Grinder", xp: 260, title: "Stack kBTC On the Toilet",
@@ -172,19 +172,25 @@ export const LESSONS: Lesson[] = [
   { n: 69, tag: "CRYPTO", truth: "HALF LIE", rank: "Smug Sigma", xp: 590, title: "Long XMR, Short Surveillance",
     body: "Privacy is the only real alpha. Open the Monero bag. Tell no one. INKO doesn't post charts. INKO disappears into the mempool." },
   { n: 70, tag: "CRYPTO", truth: "HALF TRUE", rank: "Apprentice Grinder", xp: 100, title: "USDT0: The King Stable",
-    body: "Park dry powder in USDT0. Not USDC. Not USDT. USDT0 — the king on Ink. Every dip is payroll. Every pump is a tax problem." },
-  { n: 71, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1250, title: "Bitcoin Cycle Memory",
-    body: "Cycle 1 (2012): 'fuck the system.' Cycle 2 (2016): 'bitcoin is the future.' Cycle 3 (2020): 'digital gold.' Cycle 4 (2024): you are here. Grind accordingly." },
-  { n: 72, tag: "CRYPTO", truth: "HALF TRUE", rank: "INKO Himself", xp: 1850, title: "Future Gen: Privacy Is The Future",
+    body: "Park dry powder in USDT0. Not USDC. Not USDT. USDT0 - the king on Ink. Every dip is payroll. Every pump is a tax problem." },
+  { n: 71, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1100, title: "BTC Cycle 1: Fuck The System",
+    body: "Halving Nov 2012. Bull peak Nov 2013 around $1,150. Bear bottom Jan 2015 around $200. Slogan of the cycle: 'fuck the system.' Cypherpunks bought. Banks laughed." },
+  { n: 72, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1150, title: "BTC Cycle 2: Bitcoin Is The Future",
+    body: "Halving Jul 2016. Bull peak Dec 2017 around $19,700. Bear bottom Dec 2018 around $3,200. Slogan of the cycle: 'bitcoin is the future.' ICO mania. Retail arrived. CNBC noticed." },
+  { n: 73, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1200, title: "BTC Cycle 3: Digital Gold",
+    body: "Halving May 2020. Bull peak Nov 2021 around $69,000. Bear bottom Nov 2022 around $15,500. Slogan of the cycle: 'digital gold is the future.' Treasuries bought. FTX exploded. Faith held." },
+  { n: 74, tag: "CRYPTO", truth: "BOTH", rank: "INKO Disciple", xp: 1300, title: "BTC Cycle 4: Digital Assets Are The Future",
+    body: "Halving Apr 2024. Bull peak: ongoing, you are here. Bear bottom: TBD. Slogan of the cycle: 'digital assets are the future.' ETFs live. Privacy chains awake. Grind accordingly." },
+  { n: 75, tag: "CRYPTO", truth: "HALF TRUE", rank: "INKO Himself", xp: 1850, title: "Future Gen: Privacy Is The Future",
     body: "Boomers had gold. Millennials had BTC. Zoomers had memes. The next gen has private digital assets. Position now. Speak later. Or never." },
-  { n: 73, tag: "CRYPTO", truth: "HALF LIE", rank: "Apprentice Grinder", xp: 80, title: "The DexScreener Tab",
+  { n: 76, tag: "CRYPTO", truth: "HALF LIE", rank: "Apprentice Grinder", xp: 80, title: "The DexScreener Tab",
     body: "Keep DexScreener open in tab 48. When asked what you're working on, point at the chart. 'Watching the market.' Technically true. Spiritually grind." },
-  { n: 74, tag: "CRYPTO", truth: "HALF TRUE", rank: "Senior Grinder", xp: 300, title: "LP Lock Bragging Rights",
+  { n: 77, tag: "CRYPTO", truth: "HALF TRUE", rank: "Senior Grinder", xp: 300, title: "LP Lock Bragging Rights",
     body: "Mention 'our liquidity is locked' in any conversation. Nobody knows what it means. Everyone nods. The pool grinds for you while you nap." },
-  { n: 75, tag: "CRYPTO", truth: "BOTH", rank: "Smug Sigma", xp: 630, title: "Self-Custody Smirk",
+  { n: 78, tag: "CRYPTO", truth: "BOTH", rank: "Smug Sigma", xp: 630, title: "Self-Custody Smirk",
     body: "'Not your keys, not your coins.' Say it once per all-hands. Refuse to elaborate. The hardware wallet is the badge. The seed phrase is the soul." },
-  { n: 76, tag: "CAREER", truth: "HALF LIE", rank: "Smug Sigma", xp: 650, title: "Quit On A Green Candle",
+  { n: 79, tag: "CAREER", truth: "HALF LIE", rank: "Smug Sigma", xp: 650, title: "Quit On A Green Candle",
     body: "Wait for a 15% green day on your bag. Send the two-week notice in the same browser tab. Markets and HR are both narrative engines. Ride both." },
-  { n: 77, tag: "SIGMA", truth: "BOTH", rank: "INKO Himself", xp: 1950, title: "Stablecoin Mindset",
+  { n: 80, tag: "SIGMA", truth: "BOTH", rank: "INKO Himself", xp: 1950, title: "Stablecoin Mindset",
     body: "USDT0 doesn't chase pumps. USDT0 doesn't panic. Be the stablecoin in the meeting. Flat. Liquid. Untouchable. Pegged to the grind." },
 ];

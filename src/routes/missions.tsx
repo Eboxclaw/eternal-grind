@@ -7,9 +7,9 @@ import { MISSIONS, type Mission } from "@/lib/ooo";
 export const Route = createFileRoute("/missions")({
   head: () => ({
     meta: [
-      { title: "Grind Techniques — $INKO" },
+      { title: "Grind Techniques - $INKO" },
       { name: "description", content: "Six full-screen grind rituals: Desk Lunch, Toilet Grind, Coffee Grind, Ghost Standup, Performative Deep Grind, Sick Grind. Live grind earnings tracked." },
-      { property: "og:title", content: "Grind Techniques — $INKO" },
+      { property: "og:title", content: "Grind Techniques - $INKO" },
       { property: "og:description", content: "Full-screen overlays. Live grind tracker. Cannot be interrupted." },
     ],
   }),
@@ -77,7 +77,7 @@ function MissionsPage() {
     <main className="pt-24">
       <section className="border-b border-border py-24 md:py-32">
         <div className="mx-auto max-w-[1300px] px-6 md:px-12">
-          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">— Six grind rituals —</p>
+          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.5em] text-violet">Six grind rituals </p>
           <h1 className="font-display text-6xl leading-[0.95] tracking-tight text-pearl md:text-8xl text-glow">
             Grind<br /><em>Techniques.</em>
           </h1>

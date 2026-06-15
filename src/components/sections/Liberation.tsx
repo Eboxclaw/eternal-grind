@@ -41,7 +41,7 @@ export function Liberation() {
               The deliverables are vibes.
               <span className="italic text-necro"> The grind is eternal.</span>
             </p>
-            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/50">— Sent from my couch —</p>
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/50">Sent from my couch </p>
           </div>
         </motion.div>
 

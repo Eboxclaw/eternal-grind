@@ -6,7 +6,7 @@ import { Calendar as CalIcon, AppleIcon, Trash2, Download, RotateCcw, Eraser } f
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — $INKO" },
+      { title: "Profile - $INKO" },
       { name: "description", content: "Your rank, Grind Points, salary, and connected calendars. Local-first. Yours." },
     ],
   }),
@@ -78,7 +78,7 @@ function ProfilePage() {
             ))}
           </div>
           <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/60">
-            Grinding since {hydrated && profile.joinedAt ? new Date(profile.joinedAt).toLocaleDateString() : "—"}
+            Grinding since {hydrated && profile.joinedAt ? new Date(profile.joinedAt).toLocaleDateString() : ""}
           </p>
         </div>
 

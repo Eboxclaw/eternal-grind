@@ -1,4 +1,4 @@
-// Shared lore + data for INKO — Eternal Grind on Inkchain.
+// Shared lore + data for INKO - Eternal Grind on Inkchain.
 import {
   Briefcase, Ghost, Flame, UtensilsCrossed, Armchair, Coffee, Target, Stethoscope,
   EyeOff, CalendarX, Mail, MessageSquare, Swords, PartyPopper,
@@ -60,7 +60,7 @@ export const MISSIONS: Mission[] = [
     status: "On another call", truth: "Calendar blocked. Camera off. Smug.",
     description: "A standup attended only in spirit. Mic muted. Status: contributing. Outcome: untouchable.", rate: SALARY_PER_HOUR / 60 },
   { id: "deep-grind", icon: Target, title: "Performative Deep Grind", duration: "90 min", minutes: 90,
-    status: "Focused — do not disturb",
+    status: "Focused - do not disturb",
     truth: "Memes. A long thread. A nap shaped like a thought.",
     description: "Status: locked in. Activity: vibes. The Do Not Disturb shield is sanctified by the quarterly OKR.", rate: SALARY_PER_HOUR / 60 },
   { id: "sick-grind", icon: Stethoscope, title: "Sick Grind", duration: "1 day", minutes: 480,
